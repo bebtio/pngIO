@@ -9,3 +9,5 @@ file(GLOB SRCS src/*.cpp)
 include_directories(include)
 
 add_executable(${projectName} ${SRCS})
+
+add_compile_options( -Wall -Wextra -Wpedantic -Werror)
