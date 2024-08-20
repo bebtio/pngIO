@@ -2,7 +2,12 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <arpa/inet.h>
 
+// PNGChunk data.
+//
 struct PNGChunk
 {
 
@@ -21,3 +26,6 @@ struct PNGChunk
     uint32_t crc;
 
 };
+
+PNGChunk 
+readPNGChunk( std::string filename, size_t offset, size_t &bytesRead );

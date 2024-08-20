@@ -10,7 +10,6 @@
 
 struct IHDRChunk
 {
-    IHDRCHunk( const PNGChunk &chunk );
 
     uint32_t width;
     uint32_t height;
@@ -24,8 +23,7 @@ struct IHDRChunk
 std::vector<std::byte> 
 readPNGHeader( std::string filename );
 
-PNGChunk 
-readPNGChunk( std::string filename, size_t offset, size_t &bytesRead );
+
 
 IHDRChunk
 readIHDRChunkHeader( std::string filename );
@@ -35,6 +33,7 @@ int main(int argc, char* argv[])
     std::cout << "Hello world" << std::endl;
 
     std::vector<std::byte> headerData = readPNGHeader("../testImage.png");
+    std::vector<PNGChunk> chunks;
 
     std::cout << "header:    ";
     for( const std::byte &b : headerData )
@@ -45,9 +44,27 @@ int main(int argc, char* argv[])
     std::cout << std::endl;
 
     size_t bytesRead(0);
-    PNGChunk chunk = readPNGChunk( "../testImage.png", headerData.size(), bytesRead );
+    size_t offset(headerData.size());
+    bool doneReading(false);
 
-    std::cout << chunk << std::endl;
+    // Keep reading chunks, incrementing the offset by the size of each chunk
+    // until we reach the IEND chunk which is 0x49454e44 in hex.
+    while( doneReading != true )
+    {
+        PNGChunk chunk = readPNGChunk( "../testImage.png", offset, bytesRead );
+
+        offset += bytesRead;
+
+        chunks.push_back(chunk);
+
+        if( chunk.typeCode == 0x49454e44 )
+        {
+            doneReading = true;
+        }
+    }
+
+    std::cout << "Complete" << std::endl;
+    std::cout << "Chunks read: " << chunks.size() << std::endl;
 
 
     return(0);
@@ -79,45 +96,7 @@ readPNGHeader( std::string filename )
 
 
 
-// ************************************************************************** //
-// filename - file to read data from
-// offset - number of bytes to skip before starting reading.
-// bytesRead - return number of bytes this chunk takes up.
-// ************************************************************************** //
-PNGChunk 
-readPNGChunk( std::string filename, size_t offset, size_t &bytesRead )
-{
 
-    PNGChunk chunk;
-    size_t startLoc(offset);
-
-    std::ifstream pngFile( filename, std::ios::binary );
-
-    if( pngFile.good() )
-    {
-        pngFile.ignore(offset);
-
-        pngFile.read(reinterpret_cast<char*>(&chunk.length), sizeof(uint32_t));
-        chunk.length = ntohl(chunk.length);
-
-        pngFile.read(reinterpret_cast<char*>(&chunk.typeCode), sizeof(chunk.typeCode));
-        chunk.typeCode = ntohl(chunk.typeCode);
-
-        chunk.data.resize(chunk.length);
-
-        for( size_t i; i < chunk.length; i++ )
-        {
-            pngFile.read(reinterpret_cast<char*>(&chunk.data[i]), 1);
-        }
-    
-        pngFile.read(reinterpret_cast<char*>(&chunk.crc), sizeof(chunk.crc));
-    }
-
-
-    pngFile.close();
-
-    return( chunk );
-}
 
 IHDRChunk
 readIHDRChunkHeader( std::string filename )
