@@ -64,8 +64,15 @@ int main(int argc, char* argv[])
     }
 
     std::cout << "Complete" << std::endl;
-    std::cout << "Chunks read: " << chunks.size() << std::endl;
+    std::cout << "Chunks read: " << chunks.size() << std::endl << std::endl;
 
+    int chunkCount(0);
+    for( PNGChunk &c : chunks )
+    {
+        std::cout << "Chunk: " << chunkCount << std::endl;
+        chunkCount++;
+        std::cout << c.pngChunkToString() << std::endl;
+    }
 
     return(0);
 }

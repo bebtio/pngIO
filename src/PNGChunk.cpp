@@ -1,4 +1,6 @@
 #include "PNGChunk.hpp"
+#include <ios>
+#include <string>
 
 // ************************************************************************** //
 //
@@ -7,7 +9,7 @@
 // bytesRead - return number of bytes this chunk takes up.
 // 
 // Becuase PNG's are stored in network byte order, we should call ntoh[ls]
-// as we reada in the data to get the correct endianess for our machine.
+// as we read in the data to get the correct endianess for our machine.
 //
 // ************************************************************************** //
 PNGChunk 
@@ -36,10 +38,7 @@ readPNGChunk( std::string filename, size_t offset, size_t &bytesRead )
         chunk.data.resize(chunk.length);
 
         // Loop over the bytes and read them in.
-        for( size_t i; i < chunk.length; i++ )
-        {
-            pngFile.read(reinterpret_cast<char*>(&chunk.data[i]), 1);
-        }
+        pngFile.read(reinterpret_cast<char*>(&chunk.data[0]), chunk.length);
     
         // Lastly read in the CRC. We won't do error checking on the chunks quite yet.
         pngFile.read(reinterpret_cast<char*>(&chunk.crc), sizeof(chunk.crc));
@@ -53,4 +52,42 @@ readPNGChunk( std::string filename, size_t offset, size_t &bytesRead )
     bytesRead = sizeof(chunk.length) + sizeof(chunk.typeCode) + chunk.data.size() * sizeof(std::byte) + sizeof(chunk.crc);
 
     return( chunk );
+}
+
+std::string PNGChunk::toString()
+{
+    std::stringstream ss;
+
+    ss << "-----------------------------------------------------" << std::endl
+       << "Start of Chunk" << std::endl << std::endl;
+
+
+    ss << "length:   " << this->length   << std::endl;
+    ss << "typeCode: " << this->typeCode << std::endl;
+
+    ss << "data: " << std::endl;
+
+    ss << std::hex << std::uppercase << std::setfill('0'); 
+    for (size_t i = 0; i < this->data.size(); i++)
+    {
+
+        if( i % 2 == 0 )
+        {
+            ss << " ";
+            if( i % 16 == 0 )
+            {
+                ss << std::endl;
+            }
+        }
+        // Cast std::byte to uint8_t and print as hex with 2 digits
+        ss << std::setw(2) << static_cast<uint32_t>(this->data[i]);
+    }
+
+    ss << std::dec << std::nouppercase << std::endl;
+
+    ss << "CRC:      " << this->crc << std::endl << std::endl;
+
+    ss << "End of Chunk" << std::endl
+       << "-----------------------------------------------------";
+    return ss.str();
 }

@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 #include <arpa/inet.h>
 
 // PNGChunk data.
@@ -25,6 +27,8 @@ struct PNGChunk
 
     uint32_t crc;
 
+
+    std::string ptoString();
 };
 
 PNGChunk 
