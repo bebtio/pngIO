@@ -4,8 +4,7 @@
 #include <cstddef>
 #include <arpa/inet.h>
 
-#include "PNGChunk.hpp"
-
+#include "PNGFile.hpp"
 
 
 struct IHDRChunk
@@ -20,10 +19,6 @@ struct IHDRChunk
     uint8_t  interlaceMethod;
 };
 
-std::vector<std::byte> 
-readPNGHeader( std::string filename );
-
-
 
 IHDRChunk
 readIHDRChunkHeader( std::string filename );
@@ -32,37 +27,9 @@ int main(int argc, char* argv[])
 {
     std::cout << "Hello world" << std::endl;
 
-    std::vector<std::byte> headerData = readPNGHeader("../testImage.png");
-    std::vector<PNGChunk> chunks;
+    PNGFile png( "../testImage.png" );
 
-    std::cout << "header:    ";
-    for( const std::byte &b : headerData )
-    {
-        std::cout << std::to_integer<int>(b) << " ";
-
-    } 
-    std::cout << std::endl;
-
-    size_t bytesRead(0);
-    size_t offset(headerData.size());
-    bool doneReading(false);
-
-    // Keep reading chunks, incrementing the offset by the size of each chunk
-    // until we reach the IEND chunk which is 0x49454e44 in hex.
-    while( doneReading != true )
-    {
-        PNGChunk chunk = readPNGChunk( "../testImage.png", offset, bytesRead );
-
-        offset += bytesRead;
-
-        chunks.push_back(chunk);
-
-        if( chunk.typeCode == 0x49454e44 )
-        {
-            doneReading = true;
-        }
-    }
-
+    std::vector<PNGChunk> chunks = png.getChunks();
     std::cout << "Complete" << std::endl;
     std::cout << "Chunks read: " << chunks.size() << std::endl << std::endl;
 
@@ -71,38 +38,11 @@ int main(int argc, char* argv[])
     {
         std::cout << "Chunk: " << chunkCount << std::endl;
         chunkCount++;
-        std::cout << c.pngChunkToString() << std::endl;
+        std::cout << c.toString() << std::endl;
     }
 
     return(0);
 }
-
-std::vector<std::byte>
-readPNGHeader( std::string filename )
-{
-    std::vector<std::byte> headerData;
-    char byte;
-    std::ifstream pngFile( filename, std::ios::binary );
-    
-    const size_t pngFileSignatureSize(8);
-    
-    if( pngFile.good() )
-    {
-        for( size_t i = 0; i < pngFileSignatureSize; i++ )
-        {
-            pngFile.read(&byte, 1);
-            headerData.push_back(std::byte(byte));
-        }
-    }
-
-    pngFile.close();
-
-    return( headerData );
-}
-
-
-
-
 
 
 IHDRChunk

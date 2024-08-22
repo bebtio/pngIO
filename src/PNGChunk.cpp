@@ -1,6 +1,34 @@
 #include "PNGChunk.hpp"
-#include <ios>
+#include <iostream>
 #include <string>
+
+
+// ************************************************************************** //
+//
+//
+// ************************************************************************** //
+std::vector<std::byte>
+readPNGHeader( std::string filename )
+{
+    std::vector<std::byte> headerData;
+    char byte;
+    std::ifstream pngFile( filename, std::ios::binary );
+    
+    const size_t pngFileSignatureSize(8);
+    
+    if( pngFile.good() )
+    {
+        for( size_t i = 0; i < pngFileSignatureSize; i++ )
+        {
+            pngFile.read(&byte, 1);
+            headerData.push_back(std::byte(byte));
+        }
+    }
+
+    pngFile.close();
+
+    return( headerData );
+}
 
 // ************************************************************************** //
 //
@@ -79,7 +107,7 @@ std::string PNGChunk::toString()
                 ss << std::endl;
             }
         }
-        // Cast std::byte to uint8_t and print as hex with 2 digits
+        // Cast std::byte to uint32_t and print as hex with 2 digits
         ss << std::setw(2) << static_cast<uint32_t>(this->data[i]);
     }
 

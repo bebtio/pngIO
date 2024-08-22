@@ -28,8 +28,11 @@ struct PNGChunk
     uint32_t crc;
 
 
-    std::string ptoString();
+    std::string toString();
 };
+
+std::vector<std::byte> 
+readPNGHeader( std::string filename );
 
 PNGChunk 
 readPNGChunk( std::string filename, size_t offset, size_t &bytesRead );
