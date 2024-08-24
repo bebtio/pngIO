@@ -16,7 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Upgrade to a conanfile.py so we can group the gross build commands in the README.md to a function.
+- Turn this project into a conan package.
+- Compile PNGIO sources into a libary.
+  - static
+  - shared
 - CRC check for PNGReader
 - PNG Writer
   - CRC generator for writes
