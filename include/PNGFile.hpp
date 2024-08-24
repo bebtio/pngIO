@@ -13,8 +13,9 @@ public:
     }
     
     
-    const std::vector<PNGChunk>& getChunks() { return( _chunks ); }
+    const std::vector<PNGChunk>& getChunks() { return( _chunks ); 
 
+    bool writeToFile( std::string filename );
 private:
 
     std::vector<uint8_t> _header;

@@ -36,3 +36,6 @@ readPNGHeader( std::string filename );
 
 PNGChunk 
 readPNGChunk( std::string filename, size_t offset, size_t &bytesRead );
+
+bool
+appendPNGChunkToFile( std::string filename );

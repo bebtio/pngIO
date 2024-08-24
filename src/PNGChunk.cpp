@@ -119,3 +119,9 @@ std::string PNGChunk::toString()
        << "-----------------------------------------------------";
     return ss.str();
 }
+
+bool
+appendPNGChunkToFile( std::string filename )
+{
+
+}

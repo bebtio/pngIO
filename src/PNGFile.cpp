@@ -39,3 +39,20 @@ void PNGFile::readPNGFile( std::string filename )
         this->_header.push_back( static_cast<uint8_t>(b));
     }
 }
+
+
+bool writeToFile( std::string filename )
+{
+    std::ofstream outputFile( filename, std::ios::binary );
+    bool writeSuccess(true);
+
+    if( outputFile.good() )
+    {
+
+    }
+
+    outputFile.close();
+
+    return(writeSuccess);
+
+}
