@@ -16,13 +16,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Upgrade to a conanfile.py so we can group the gross build commands in the README.md to a function.
+- Turn this project into a conan package.
+- Compile PNGIO sources into a libary.
+  - static
+  - shared
 - CRC check for PNGReader
 - PNG Writer
   - CRC generator for writes
 - Class or struct for each PNG Chunk type
   - Enum for chunk types codes
 - Tests, many tests.
+
+## [0.1.0] - 2024-08-24
+
+### Added
+
+- conanfile.py build function. This will let conan generate our cmake files as well
+  as build our sources and executables with fewer commands. We can now build by doing
+  conan install -of build . && conan build -of build .
+
+### Changed
+
+- README.md to reflect the new build instructions.
 
 ## [0.0.0] - 2024-08-24
 

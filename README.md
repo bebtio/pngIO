@@ -26,18 +26,10 @@ conan profile detect --force
 conan install . -of build --build=missing
 ```
 
-5. Build the project using CMake:
+5. Build the project using conan:
 
 ```
-cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-cmake --build .
-```
-
-6. Test executable should now be in build/test
-
-```
-./test/test
+conan build . -of build
 ```
 
 Set of build commands is bundled here for convenience.
@@ -48,7 +40,5 @@ source .venv/bin/activate && \
 pip3 install -r requirements.txt && \
 conan profile detect --force && \
 conan install . -of build --build=missing && \
-cd build && \
-cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release && \
-cmake --build .
+conan build . -of build
 ```
