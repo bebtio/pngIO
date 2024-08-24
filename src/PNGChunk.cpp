@@ -70,6 +70,9 @@ readPNGChunk( std::string filename, size_t offset, size_t &bytesRead )
     
         // Lastly read in the CRC. We won't do error checking on the chunks quite yet.
         pngFile.read(reinterpret_cast<char*>(&chunk.crc), sizeof(chunk.crc));
+
+        std::cout << __FILE__ << ":" << __LINE__ << ":";
+        std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
     }
 
 
@@ -111,6 +114,7 @@ std::string PNGChunk::toString()
         ss << std::setw(2) << static_cast<uint32_t>(this->data[i]);
     }
 
+
     ss << std::dec << std::nouppercase << std::endl;
 
     ss << "CRC:      " << this->crc << std::endl << std::endl;
@@ -118,10 +122,4 @@ std::string PNGChunk::toString()
     ss << "End of Chunk" << std::endl
        << "-----------------------------------------------------";
     return ss.str();
-}
-
-bool
-appendPNGChunkToFile( std::string filename )
-{
-
 }

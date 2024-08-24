@@ -13,14 +13,13 @@ public:
     }
     
     
-    const std::vector<PNGChunk>& getChunks() { return( _chunks ); 
+    const std::vector<PNGChunk>& getChunks() { return( _chunks ); } 
 
-    bool writeToFile( std::string filename );
 private:
 
     std::vector<uint8_t> _header;
     std::vector<PNGChunk> _chunks;
 
 
-    void readPNGFile( std::string filename );
+    bool readPNGFile( std::string filename );
 };
