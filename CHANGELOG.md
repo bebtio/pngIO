@@ -24,6 +24,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enum for chunk types codes
 - Tests, many tests.
 
+## [0.1.0] - 2024-08-24
+
+### Added
+
+- conanfile.py build function. This will let conan generate our cmake files as well
+  as build our sources and executables with fewer commands. We can now build by doing
+  conan install -of build . && conan build -of build .
+
+### Changed
+
+- README.md to reflect the new build instructions.
+
 ## [0.0.0] - 2024-08-24
 
 ### Added
