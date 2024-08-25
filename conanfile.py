@@ -12,8 +12,11 @@ class PngIORecipe(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeToolchain", "CMakeDeps"
 
-    options = {"shared": [True,False]}
-    default_options = {"shared": False}
+    options = {"shared": [True,False],
+               "fPIC": [True,False],}
+
+    default_options = {"shared": False,
+                       "fPIC": True,}
 
     # Grab the version number from the VERSION file.
     def set_version(self):
