@@ -5,12 +5,12 @@ PNGFile::load( const std::string &filename )
 {
     bool readSuccess(true);
 
-    std::vector<std::byte> headerData = readPNGSignature(filename);
+    std::vector<std::byte> sigData = readPNGSignature(filename);
     std::vector<PNGChunk> chunks;
 
-    std::cout << "header:    ";
+    std::cout << "signature:    ";
 
-    for( const std::byte &b : headerData )
+    for( const std::byte &b : sigData )
     {
         std::cout << std::to_integer<int>(b) << " ";
 
@@ -18,17 +18,16 @@ PNGFile::load( const std::string &filename )
 
     std::cout << std::endl;
 
-    size_t bytesRead(0);
-    size_t offset(headerData.size());
+    size_t offset(sigData.size());
     bool doneReading(false);
 
     // Keep reading chunks, incrementing the offset by the size of each chunk
     // until we reach the IEND chunk which is 0x49454e44 in hex.
     while( doneReading != true )
     {
-        PNGChunk chunk = readPNGChunk( filename, offset, bytesRead );
+        PNGChunk chunk = readPNGChunk( filename, offset );
 
-        offset += bytesRead;
+        offset += chunk.getSizeInBytes();
 
         chunks.push_back(chunk);
 
@@ -40,9 +39,9 @@ PNGFile::load( const std::string &filename )
 
     this->_chunks = chunks;
 
-    for( std::byte b : headerData )
+    for( std::byte b : sigData )
     {
-        this->_header.push_back( static_cast<uint8_t>(b));
+        this->_signature.push_back( static_cast<uint8_t>(b));
     }
 
 

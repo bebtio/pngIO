@@ -31,17 +31,20 @@ readPNGSignature( const std::string &filename )
 }
 
 // ************************************************************************** //
-//
-// filename - file to read data from
-// offset - number of bytes to skip before starting reading.
-// bytesRead - return number of bytes this chunk takes up.
-// 
-// Becuase PNG's are stored in network byte order, we should call ntoh[ls]
+// \brief Reads a png file's chunk data at location offset.
+//        Returns the number of bytes 
+// Because PNG's are stored in network byte order, we should call ntoh[ls]
 // as we read in the data to get the correct endianess for our machine.
+// will return 0 bytes read on error.
 //
+// \param[in]  filename  - name of the png file to read in.
+// \param[in]  offset    - how many bytes into the file to read in the png chunkd.
+// \param[out] bytesRead - the number of bytes the read in png chunk was.
+//
+// \return PNGChunk
 // ************************************************************************** //
 PNGChunk 
-readPNGChunk( const std::string &filename, size_t offset, size_t &bytesRead )
+readPNGChunk( const std::string &filename, size_t offset )
 {
 
     PNGChunk chunk;
@@ -78,11 +81,21 @@ readPNGChunk( const std::string &filename, size_t offset, size_t &bytesRead )
 
     pngFile.close();
 
-    // The size of all the data elements in the chunk is the number of bytes read.
-    // You can then use this to compute the offset for the next chunk.
-    bytesRead = sizeof(chunk.length) + sizeof(chunk.typeCode) + chunk.data.size() * sizeof(std::byte) + sizeof(chunk.crc);
+
 
     return( chunk );
+}
+
+size_t
+PNGChunk::getSizeInBytes()
+{
+    size_t chunkSize(0);
+
+    // The size of all the data elements in the chunk is the number of bytes read.
+    // You can then use this to compute the offset for the next chunk.
+    chunkSize = sizeof(this->length) + sizeof(this->typeCode) + this->data.size() * sizeof(std::byte) + sizeof(this->crc);
+
+    return(chunkSize);
 }
 
 std::string PNGChunk::toString()

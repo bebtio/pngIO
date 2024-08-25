@@ -28,6 +28,8 @@ struct PNGChunk
     uint32_t crc;
 
 
+    size_t getSizeInBytes();
+
     std::string toString();
 };
 
@@ -35,4 +37,4 @@ std::vector<std::byte>
 readPNGSignature( const std::string &filename );
 
 PNGChunk 
-readPNGChunk( const std::string &filename, size_t offset, size_t &bytesRead );
+readPNGChunk( const std::string &filename, size_t offset );

@@ -15,7 +15,7 @@ public:
 
 private:
 
-    std::vector<uint8_t> _header;
+    std::vector<uint8_t> _signature;
     std::vector<PNGChunk> _chunks;
 
 };
