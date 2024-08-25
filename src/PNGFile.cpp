@@ -31,7 +31,7 @@ PNGFile::load( const std::string &filename )
 
         chunks.push_back(chunk);
 
-        if( chunk.typeCode == static_cast<uint32_t>(pngIO::TypeCodes::IEND) )
+        if( chunk.getTypeCode() == static_cast<uint32_t>(pngIO::TypeCodes::IEND) )
         {
             doneReading = true;
         }

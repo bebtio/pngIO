@@ -73,10 +73,15 @@ TEST( PNGChunkTest, NumChunksTest )
     ASSERT_EQ( chunks[1].getSizeInBytes(), 333 );
     ASSERT_EQ( chunks[2].getSizeInBytes(), 12  );
 
-    // Now compare the data elements length.
-    ASSERT_EQ( chunks[0].length, 25  - 12 );
-    ASSERT_EQ( chunks[1].length, 333 - 12 );
-    ASSERT_EQ( chunks[2].length, 12  - 12 );
+    // Now compare the data elements length to the expected value.
+    ASSERT_EQ( chunks[0].getLength(), 25  - 12 );
+    ASSERT_EQ( chunks[1].getLength(), 333 - 12 );
+    ASSERT_EQ( chunks[2].getLength(), 12  - 12 );
+
+    // Compare the stored length variable to the actuall length of the data.
+    ASSERT_EQ( chunks[0].getLength(), chunks[0].getData().size() );
+    ASSERT_EQ( chunks[1].getLength(), chunks[1].getData().size() );
+    ASSERT_EQ( chunks[2].getLength(), chunks[2].getData().size() );
 }
 
 // *************************************************** //

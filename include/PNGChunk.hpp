@@ -10,27 +10,39 @@
 
 // PNGChunk data.
 //
-struct PNGChunk
+class PNGChunk
 {
 
+public:
+
     PNGChunk(): 
-      length(0)
-    , typeCode(0)
-    , data{0}
-    , crc(0)
+      _length(0)
+    , _typeCode(0)
+    , _data{0}
+    , _crc(0)
     {}
 
-    uint32_t length;
-    uint32_t typeCode;
+    uint32_t                      getLength()              { return(_length);            }
+    uint32_t                      getTypeCode()            { return(_typeCode);          }
+    std::vector<std::byte>& getData()                { return(_data);              }
+    uint32_t                      getCRC()                 { return(_crc);               }
 
-    std::vector<std::byte> data;
-
-    uint32_t crc;
-
+    void setLength  ( uint32_t length )                    { this->_length = length;     }
+    void setTypeCode( uint32_t typeCode )                  { this->_typeCode = typeCode; }
+    void setData    ( const std::vector<std::byte> &data ) { this->_data = data;         }
+    void setCRC     ( uint32_t crc )                       { this->_crc = crc;           }
 
     size_t getSizeInBytes();
 
     std::string toString();
+
+private:
+    uint32_t               _length;
+    uint32_t               _typeCode;
+    std::vector<std::byte> _data;
+    uint32_t               _crc;
+
+
 };
 
 std::vector<std::byte> 

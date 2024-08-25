@@ -50,6 +50,11 @@ readPNGChunk( const std::string &filename, size_t offset )
 
     // open the file for reading.
     std::ifstream pngFile( filename, std::ios::binary );
+    
+    uint32_t length(0);
+    uint32_t typeCode(0);
+    std::vector<std::byte> data(0);
+    uint32_t crc(0);
 
     if( pngFile.good() )
     {
@@ -57,21 +62,23 @@ readPNGChunk( const std::string &filename, size_t offset )
         pngFile.ignore(offset);
 
         // Read the length element, this will tell how many bytes to read from the data portion of the chunk.
-        pngFile.read(reinterpret_cast<char*>(&chunk.length), sizeof(chunk.length));
-        chunk.length = ntohl(chunk.length);
+        pngFile.read(reinterpret_cast<char*>(&length), sizeof(length));
+        chunk.setLength(ntohl(length));
 
         // Next read the typeCode, this will tell us what kind of data this chunk contains.
-        pngFile.read(reinterpret_cast<char*>(&chunk.typeCode), sizeof(chunk.typeCode));
-        chunk.typeCode = ntohl(chunk.typeCode);
+        pngFile.read(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
+        chunk.setTypeCode(ntohl(typeCode));
 
         // Resize the data to the length read in.
-        chunk.data.resize(chunk.length);
+        data.resize(chunk.getLength());
 
         // Loop over the bytes and read them in.
-        pngFile.read(reinterpret_cast<char*>(&chunk.data[0]), chunk.length);
+        pngFile.read(reinterpret_cast<char*>(&data[0]), chunk.getLength());
+        chunk.setData(data);
     
         // Lastly read in the CRC. We won't do error checking on the chunks quite yet.
-        pngFile.read(reinterpret_cast<char*>(&chunk.crc), sizeof(chunk.crc));
+        pngFile.read(reinterpret_cast<char*>(&crc), sizeof(crc));
+        chunk.setCRC(ntohl(crc));
 
         std::cout << __FILE__ << ":" << __LINE__ << ":";
         std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
@@ -92,7 +99,7 @@ PNGChunk::getSizeInBytes()
 
     // The size of all the data elements in the chunk is the number of bytes read.
     // You can then use this to compute the offset for the next chunk.
-    chunkSize = sizeof(this->length) + sizeof(this->typeCode) + this->data.size() * sizeof(std::byte) + sizeof(this->crc);
+    chunkSize = sizeof(this->_length) + sizeof(this->_typeCode) + this->_data.size() * sizeof(std::byte) + sizeof(this->_crc);
 
     return(chunkSize);
 }
@@ -105,13 +112,13 @@ std::string PNGChunk::toString()
        << "Start of Chunk" << std::endl << std::endl;
 
 
-    ss << "length:   " << this->length   << std::endl;
-    ss << "typeCode: " << this->typeCode << std::endl;
+    ss << "length:   " << this->getLength()   << std::endl;
+    ss << "typeCode: " << this->getTypeCode() << std::endl;
 
     ss << "data: " << std::endl;
 
     ss << std::hex << std::uppercase << std::setfill('0'); 
-    for (size_t i = 0; i < this->data.size(); i++)
+    for (size_t i = 0; i < this->getData().size(); i++)
     {
 
         if( i % 2 == 0 )
@@ -123,13 +130,13 @@ std::string PNGChunk::toString()
             }
         }
         // Cast std::byte to uint32_t and print as hex with 2 digits
-        ss << std::setw(2) << static_cast<uint32_t>(this->data[i]);
+        ss << std::setw(2) << static_cast<uint32_t>(this->getData()[i]);
     }
 
 
     ss << std::dec << std::nouppercase << std::endl;
 
-    ss << "CRC:      " << this->crc << std::endl << std::endl;
+    ss << "CRC:      " << this->getCRC() << std::endl << std::endl;
 
     ss << "End of Chunk" << std::endl
        << "-----------------------------------------------------";
