@@ -1,6 +1,8 @@
+import os
 from conan import ConanFile
 from conan.tools.cmake import CMake
 from conan.tools.files import load
+from conan.tools.files import copy
 
 class PngIORecipe(ConanFile):
 
@@ -34,3 +36,7 @@ class PngIORecipe(ConanFile):
 
         # Run our tests on each build.
         self.run("./test/test")
+
+    def package(self):
+        copy(self, "*.so", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+        copy(self, "*.a",  src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
