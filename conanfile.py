@@ -6,13 +6,16 @@ class PngIORecipe(ConanFile):
 
     name = "pngio"
     url = "https://github.com/bebtio/pngIO"
-    version =  load("./","VERSION").strip()
 
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeToolchain", "CMakeDeps"
 
     options = {"shared": [True,False]}
-    default_options = {"shared": True}
+    default_options = {"shared": False}
+
+    # Grab the version number from the VERSION file.
+    def set_version(self):
+        self.version =  load(self,"VERSION").strip()
 
     # List of dependencies goes here.
     # One self.requires per dependency.
