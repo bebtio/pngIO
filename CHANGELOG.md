@@ -38,6 +38,14 @@ when changes to the tests have been made without changes being made to the libra
 - How we access data from PNGChunk. All elements used to be public as PNGChunk was a struct.
   Changed it to a class and added getters and setters. This will make testing and catching bugs easier
   since we can track the set functions and see where the variables are specifically gettings set.
+- Function name of readPNGHeader to readPNGSignature.
+- Function name of PNGFile::readPNGFile to PNGFile::load.
+- The PNGFile constructor, it now does nothing. I've moved the functionality to the load function.
+- Many of the input std::string filename to const std::string &filename.
+
+### Added
+
+- New file PNGIOTypes that will contain definitions for things like the PNG file signature as well as enumerated type codes.
 
 ### Removed
 
