@@ -19,7 +19,7 @@ of semantic versioning. So scheme is MAJOR.MINOR.PATCH+TEST_VERSION.
 
 ## [Unreleased]
 
-## [0.1.0+1] - 2024-08-24
+## [0.2.0] - 2024-08-24
 
 ### Added
 

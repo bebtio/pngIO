@@ -31,6 +31,12 @@ when changes to the tests have been made without changes being made to the libra
   - Enum for chunk types codes
 - Tests, many tests.
 
+## [0.2.0] - 2024-08-24
+
+### Removed
+
+- main.cpp. Code will now be executed by gtest code.
+
 ## [0.1.0] - 2024-08-24
 
 ### Added
