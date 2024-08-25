@@ -31,6 +31,27 @@ when changes to the tests have been made without changes being made to the libra
   - Enum for chunk types codes
 - Tests, many tests.
 
+## [0.3.0] - 2024-08-25
+
+### Changed
+
+- How we access data from PNGChunk. All elements used to be public as PNGChunk was a struct.
+  Changed it to a class and added getters and setters. This will make testing and catching bugs easier
+  since we can track the set functions and see where the variables are specifically gettings set.
+- Function name of readPNGHeader to readPNGSignature.
+- Function name of PNGFile::readPNGFile to PNGFile::load.
+- The PNGFile constructor, it now does nothing. I've moved the functionality to the load function.
+- Many of the input std::string filename to const std::string &filename.
+
+### Added
+
+- New file PNGIOTypes that will contain definitions for things like the PNG file signature as well as enumerated type codes.
+
+### Removed
+
+- The hard coded file path to the testImage.png file. I was incorrectly using the input filename, meaning
+  I wasn't using it at all... oops.
+
 ## [0.2.0] - 2024-08-24
 
 ### Removed

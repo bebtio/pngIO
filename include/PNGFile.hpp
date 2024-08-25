@@ -7,19 +7,15 @@ class PNGFile
 {
 
 public:
-    PNGFile( std::string filename )
-    {
-        readPNGFile(filename);
-    }
+    PNGFile() {}
     
+    bool load( const std::string &filename );
     
     const std::vector<PNGChunk>& getChunks() { return( _chunks ); } 
 
 private:
 
-    std::vector<uint8_t> _header;
+    std::vector<uint8_t> _signature;
     std::vector<PNGChunk> _chunks;
 
-
-    bool readPNGFile( std::string filename );
 };

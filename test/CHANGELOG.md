@@ -19,6 +19,19 @@ of semantic versioning. So scheme is MAJOR.MINOR.PATCH+TEST_VERSION.
 
 ## [Unreleased]
 
+## [0.3.0] - 2024-08-25
+
+### Added 
+
+- PNGChunkTest file which contains tests for:
+  - Reading in the correct header.
+  - Reading in the correct number of chunks.
+  - Reading in the correct data from the png file.
+
+### Removed
+
+- Old HelloWorldTest file.
+
 ## [0.2.0] - 2024-08-24
 
 ### Added
