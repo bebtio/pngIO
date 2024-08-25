@@ -8,9 +8,9 @@
 //
 // ************************************************************************** //
 std::vector<std::byte>
-readPNGHeader( std::string filename )
+readPNGSignature( const std::string &filename )
 {
-    std::vector<std::byte> headerData;
+    std::vector<std::byte> sigData;
     char byte;
     std::ifstream pngFile( filename, std::ios::binary );
     
@@ -21,13 +21,13 @@ readPNGHeader( std::string filename )
         for( size_t i = 0; i < pngFileSignatureSize; i++ )
         {
             pngFile.read(&byte, 1);
-            headerData.push_back(std::byte(byte));
+            sigData.push_back(std::byte(byte));
         }
     }
 
     pngFile.close();
 
-    return( headerData );
+    return( sigData );
 }
 
 // ************************************************************************** //
@@ -41,7 +41,7 @@ readPNGHeader( std::string filename )
 //
 // ************************************************************************** //
 PNGChunk 
-readPNGChunk( std::string filename, size_t offset, size_t &bytesRead )
+readPNGChunk( const std::string &filename, size_t offset, size_t &bytesRead )
 {
 
     PNGChunk chunk;

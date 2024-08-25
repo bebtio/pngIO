@@ -16,7 +16,7 @@ struct PNGChunk
     PNGChunk(): 
       length(0)
     , typeCode(0)
-    , data(0)
+    , data{0}
     , crc(0)
     {}
 
@@ -32,7 +32,7 @@ struct PNGChunk
 };
 
 std::vector<std::byte> 
-readPNGHeader( std::string filename );
+readPNGSignature( const std::string &filename );
 
 PNGChunk 
-readPNGChunk( std::string filename, size_t offset, size_t &bytesRead );
+readPNGChunk( const std::string &filename, size_t offset, size_t &bytesRead );

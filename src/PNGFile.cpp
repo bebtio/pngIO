@@ -1,19 +1,21 @@
 #include "PNGFile.hpp"
 
 bool
-PNGFile::readPNGFile( std::string filename )
+PNGFile::load( const std::string &filename )
 {
     bool readSuccess(true);
 
-    std::vector<std::byte> headerData = readPNGHeader("../testImage.png");
+    std::vector<std::byte> headerData = readPNGSignature(filename);
     std::vector<PNGChunk> chunks;
 
     std::cout << "header:    ";
+
     for( const std::byte &b : headerData )
     {
         std::cout << std::to_integer<int>(b) << " ";
 
     } 
+
     std::cout << std::endl;
 
     size_t bytesRead(0);
@@ -24,7 +26,7 @@ PNGFile::readPNGFile( std::string filename )
     // until we reach the IEND chunk which is 0x49454e44 in hex.
     while( doneReading != true )
     {
-        PNGChunk chunk = readPNGChunk( "../testImage.png", offset, bytesRead );
+        PNGChunk chunk = readPNGChunk( filename, offset, bytesRead );
 
         offset += bytesRead;
 
