@@ -43,3 +43,5 @@ class PngIORecipe(ConanFile):
     def package(self):
         copy(self, "*.so", src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
         copy(self, "*.a",  src=self.build_folder, dst=os.path.join(self.package_folder, "lib"), keep_path=False)
+
+        copy(self, "*.hpp", src=os.path.join(self.source_folder, "include"), dst=os.path.join(self.package_folder, "include"))
