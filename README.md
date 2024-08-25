@@ -20,13 +20,7 @@ pip3 install -r requirements.txt
 conan profile detect --force
 ```
 
-4. Build and install dependencies defined in conanfile.txt
-
-```
-conan install . -of build --build=missing
-```
-
-5. Build the project using conan:
+4. Build the project using conan:
 
 ```
 conan build . -of build
@@ -39,6 +33,5 @@ python3 -m venv .venv && \
 source .venv/bin/activate && \
 pip3 install -r requirements.txt && \
 conan profile detect --force && \
-conan install . -of build --build=missing && \
 conan build . -of build
 ```
