@@ -1,5 +1,5 @@
 #include "PNGFile.hpp"
-
+#include "PNGIOTypes.hpp"
 bool
 PNGFile::load( const std::string &filename )
 {
@@ -31,7 +31,7 @@ PNGFile::load( const std::string &filename )
 
         chunks.push_back(chunk);
 
-        if( chunk.typeCode == 0x49454e44 )
+        if( chunk.typeCode == static_cast<uint32_t>(pngIO::TypeCodes::IEND) )
         {
             doneReading = true;
         }

@@ -35,11 +35,10 @@ readPNGSignature( const std::string &filename )
 //        Returns the number of bytes 
 // Because PNG's are stored in network byte order, we should call ntoh[ls]
 // as we read in the data to get the correct endianess for our machine.
-// will return 0 bytes read on error.
+// will return a chunk of size bytes 0 on error.
 //
 // \param[in]  filename  - name of the png file to read in.
 // \param[in]  offset    - how many bytes into the file to read in the png chunkd.
-// \param[out] bytesRead - the number of bytes the read in png chunk was.
 //
 // \return PNGChunk
 // ************************************************************************** //

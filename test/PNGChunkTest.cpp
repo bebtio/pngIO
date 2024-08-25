@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include "PNGFile.hpp"
 #include "PNGChunk.hpp"
 #include "PNGIOTypes.hpp"
 
@@ -16,7 +17,7 @@
 //
 // If either steps 2. or 3. fails, the test fails.
 // *************************************************** //
-TEST( PNGChunkTest, ReadHeaderTest )
+TEST( PNGChunkTest, ReadSignatureTest )
 {
     std::filesystem::path p(INPUT_DIR);
     p /= "testImage.png";    
@@ -32,6 +33,70 @@ TEST( PNGChunkTest, ReadHeaderTest )
         ASSERT_EQ( static_cast<uint8_t>(header[i]), pngIO::signature[i] );
     }
 }
+
+// *************************************************** //
+// Test name: PNGChunkTest.NumChunksTest
+//
+// Test the testImage.png has exactly 3 chunks.
+// They are the IHDR, IDAT, and IEND chunks
+// with sizes in bytes of 25, 333, adn 12 respectively.
+// Their data lengths are: 13, 321, and 0 respectively.
+// 
+// Each chunk contains the same 12 bytes: 4 for the type code,
+// 4 for the data length, and 4 for the CRC.
+// If you subtract the 12 bytes from the sizes in bytes, you just
+// get the data lengths, which is the only thing that varies between chunks.
+//
+// We will compare both chunk sizes and their data members length.
+//
+// These data were acquired by inspecting the file with the
+// linux xxd tool.
+//
+// If the chunk size or data length vary from the inspected values
+// this test fails.
+// *************************************************** //
+TEST( PNGChunkTest, NumChunksTest )
+{
+    std::filesystem::path p(INPUT_DIR);
+    p /= "testImage.png";
+
+    PNGFile png;
+    png.load( p.string() );
+
+    std::vector<PNGChunk> chunks = png.getChunks();    
+    
+    // Compare the number of chunks to the expected number.
+    ASSERT_EQ( chunks.size(), 3 );
+
+    // Compare the chunks size in bytes to the expected size.
+    ASSERT_EQ( chunks[0].getSizeInBytes(), 25  );
+    ASSERT_EQ( chunks[1].getSizeInBytes(), 333 );
+    ASSERT_EQ( chunks[2].getSizeInBytes(), 12  );
+
+    // Now compare the data elements length.
+    ASSERT_EQ( chunks[0].length, 25  - 12 );
+    ASSERT_EQ( chunks[1].length, 333 - 12 );
+    ASSERT_EQ( chunks[2].length, 12  - 12 );
+}
+
+// *************************************************** //
+// *************************************************** //
+TEST( PNGChunkTest, IHDRChunkSizeTest )
+{
+
+    std::filesystem::path p(INPUT_DIR);
+    p /= "testImage.png";
+
+    PNGFile png;
+    png.load( p.string() );
+
+    std::vector<PNGChunk> chunks = png.getChunks();    
+
+    FAIL();
+}
+
+
+
 
 // *************************************************** //
 // Test name PNGChunkTest.ReadChunkTest
