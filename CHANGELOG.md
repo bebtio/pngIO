@@ -3,7 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) with the addition of a fourth
+version number that represents the TEST_VERSION. Test version adheres to [Spec Item 10](https://semver.org/spec/v2.0.0-rc.2.html#spec-item-10)
+of semantic versioning. So scheme is MAJOR.MINOR.PATCH+TEST_VERSION. Changes to the TEST_VERSION, however, 
+will be tracked in the ./test/CHANGLOG.md and the TEST_VERSION will be included/incremented
+when changes to the tests have been made without changes being made to the library itself.
 
 ### Types of changes
 
@@ -26,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Class or struct for each PNG Chunk type
   - Enum for chunk types codes
 - Tests, many tests.
+
+## [0.2.0] - 2024-08-24
+
+### Removed
+
+- main.cpp. Code will now be executed by gtest code.
 
 ## [0.1.0] - 2024-08-24
 
