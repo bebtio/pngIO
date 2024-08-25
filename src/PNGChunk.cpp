@@ -121,16 +121,16 @@ std::string PNGChunk::toString()
     for (size_t i = 0; i < this->getData().size(); i++)
     {
 
-        if( i % 2 == 0 )
+        if( i % 1 == 0 )
         {
-            ss << " ";
+            ss << "0x";
             if( i % 16 == 0 )
             {
                 ss << std::endl;
             }
         }
         // Cast std::byte to uint32_t and print as hex with 2 digits
-        ss << std::setw(2) << static_cast<uint32_t>(this->getData()[i]);
+        ss << std::setw(2) << static_cast<uint32_t>(this->getData()[i]) << ", ";
     }
 
 
