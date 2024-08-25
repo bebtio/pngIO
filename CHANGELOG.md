@@ -20,10 +20,6 @@ when changes to the tests have been made without changes being made to the libra
 
 ## [Unreleased]
 
-- Turn this project into a conan package.
-- Compile PNGIO sources into a libary.
-  - static
-  - shared
 - CRC check for PNGReader
 - PNG Writer
   - CRC generator for writes
@@ -53,6 +49,10 @@ when changes to the tests have been made without changes being made to the libra
   I wasn't using it at all... oops.
 
 ## [0.2.0] - 2024-08-24
+
+### Changed
+
+- Now uses conan to handle dependencies, build, and export as a package!!!!
 
 ### Removed
 
