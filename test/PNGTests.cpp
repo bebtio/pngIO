@@ -189,7 +189,7 @@ TEST_F( PNGTests, ChunksContentsTest )
 }
 
 // *************************************************** //
-// Test name: PNGTests.WriteToFileTest
+// Test name: PNGTests.WriteChunkToFileTest
 //
 // Test procedure.
 // 1. Reads in a known PNGChunk (chunk) from testImage.png 
@@ -199,9 +199,9 @@ TEST_F( PNGTests, ChunksContentsTest )
 // 5. If their contents are identical, the test passes.
 //    Fails otherwise.
 // *************************************************** //
-TEST_F( PNGTests, WriteToFileTest )
+TEST_F( PNGTests, WriteChunkToFileTest )
 {
-    std::filesystem::path output( getOutputDir() / "PNGTests_WriteToFileTest_chunk.txt");
+    std::filesystem::path output( getOutputDir() / "PNGTests_WriteChunkToFileTest_chunk.txt");
 
     // Remove the file if it exists.
     if( std::filesystem::exists( output ) )
