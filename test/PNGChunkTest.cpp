@@ -199,8 +199,13 @@ TEST( PNGChunkTest, ChunksContentsTest )
 // *************************************************** //
 // Test name: PNGChunkTest.WriteToFileTest
 //
-// 
-//
+// Test procedure.
+// 1. Reads in a known PNGChunk (chunk) from testImage.png 
+// 2. Writes that same PNGChunk back to a file ("PNGChunkTest_WriteToFileTest_chunk.txt").
+// 3. Reads in that new PNGChunk (reReadChunk).
+// 4. Compares the original, chunk, to the copy, reReadChunk.
+// 5. If their contents are identical, the test passes.
+//    Fails otherwise.
 // *************************************************** //
 TEST( PNGChunkTest, WriteToFileTest )
 {
@@ -210,11 +215,8 @@ TEST( PNGChunkTest, WriteToFileTest )
     std::filesystem::path output( OUTPUT_DIR );
     output /= "PNGChunkTest_WriteToFileTest_chunk.txt";
 
-    PNGFile inputPng;
-    inputPng.load( input );
-
     // Read the first chunk of the PNG file.
-    PNGChunk chunk( inputPng.getChunks()[0] );
+    PNGChunk chunk( readPNGChunk(input, 8) );
 
     // Check that we completed the write to the file.
     ASSERT_TRUE( writePNGChunk( chunk, output.string() ) ) << "Failed to write file: " << output.string();
@@ -224,6 +226,7 @@ TEST( PNGChunkTest, WriteToFileTest )
 
     // Compare the size in bytes, typecode, and CRC of both chunks to make sure they are the same.
     ASSERT_EQ( chunk.getSizeInBytes(), reReadChunk.getSizeInBytes() );
+    ASSERT_EQ( chunk.getLength(),      reReadChunk.getLength()      );
     ASSERT_EQ( chunk.getTypeCode(),    reReadChunk.getTypeCode()    );
     ASSERT_EQ( chunk.getCRC(),         reReadChunk.getCRC()         );
 
