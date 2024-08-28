@@ -1,3 +1,5 @@
+#include "PNGChunkTest.hpp"
+
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -17,12 +19,9 @@
 //
 // If either steps 2. or 3. fails, the test fails.
 // *************************************************** //
-TEST( PNGChunkTest, ReadSignatureTest )
+TEST_F( PNGChunkTest, ReadSignatureTest )
 {
-    std::filesystem::path p(INPUT_DIR);
-    p /= "testImage.png";    
-
-    std::vector<std::byte> header = readPNGSignature( p.string() );
+    std::vector<std::byte> header = readPNGSignature( getTestImagePath().string() );
 
     // The header should contain exactly 8 bytes.
     ASSERT_EQ( header.size(), 8 );
@@ -55,13 +54,10 @@ TEST( PNGChunkTest, ReadSignatureTest )
 // If the chunk size or data length vary from the inspected values
 // this test fails.
 // *************************************************** //
-TEST( PNGChunkTest, NumChunksTest )
+TEST_F( PNGChunkTest, NumChunksTest )
 {
-    std::filesystem::path p(INPUT_DIR);
-    p /= "testImage.png";
-
     PNGFile png;
-    png.load( p.string() );
+    png.load( getTestImagePath().string() );
 
     std::vector<PNGChunk> chunks = png.getChunks();    
     
@@ -132,14 +128,10 @@ TEST( PNGChunkTest, NumChunksTest )
 // The structure of this output is described here: http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
 //
 // *************************************************** //
-TEST( PNGChunkTest, ChunksContentsTest )
+TEST_F( PNGChunkTest, ChunksContentsTest )
 {
-
-    std::filesystem::path p(INPUT_DIR);
-    p /= "testImage.png";
-
     PNGFile png;
-    png.load( p.string() );
+    png.load( getTestImagePath().string() );
 
     std::vector<PNGChunk> chunks = png.getChunks();    
 
@@ -207,16 +199,12 @@ TEST( PNGChunkTest, ChunksContentsTest )
 // 5. If their contents are identical, the test passes.
 //    Fails otherwise.
 // *************************************************** //
-TEST( PNGChunkTest, WriteToFileTest )
+TEST_F( PNGChunkTest, WriteToFileTest )
 {
-    std::filesystem::path input( INPUT_DIR );
-    input /= "testImage.png";
-
-    std::filesystem::path output( OUTPUT_DIR );
-    output /= "PNGChunkTest_WriteToFileTest_chunk.txt";
+    std::filesystem::path output( getOutputDir() / "PNGChunkTest_WriteToFileTest_chunk.txt");
 
     // Read the first chunk of the PNG file.
-    PNGChunk chunk( readPNGChunk(input, 8) );
+    PNGChunk chunk( readPNGChunk(getTestImagePath(), 8) );
 
     // Check that we completed the write to the file.
     ASSERT_TRUE( writePNGChunk( chunk, output.string() ) ) << "Failed to write file: " << output.string();
@@ -234,4 +222,21 @@ TEST( PNGChunkTest, WriteToFileTest )
     {
         ASSERT_EQ( chunk.getData()[i], reReadChunk.getData()[i] );
     }
+}
+
+void PNGChunkTest::SetUp()
+{
+    _testImagePath = std::filesystem::path(INPUT_DIR) / "testImage.png";
+    _outputDir     = OUTPUT_DIR;
+
+    // Create the output directory if it does not exist yet.
+    if( !std::filesystem::exists(_outputDir) )
+    {
+        std::filesystem::create_directories(_outputDir);
+    }
+}
+
+void PNGChunkTest::TearDown()
+{
+
 }
