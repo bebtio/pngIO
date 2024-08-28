@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 
 
-class PNGChunkTest : public testing::Test
+class PNGTests : public testing::Test
 {
 
 public:
