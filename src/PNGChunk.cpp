@@ -84,12 +84,38 @@ readPNGChunk( const std::string &filename, size_t offset )
         std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
     }
 
-
     pngFile.close();
 
-
-
     return( chunk );
+}
+
+bool
+writePNGChunk( const PNGChunk &chunk, const std::string &filename )
+{
+    bool writeSuccess(false);
+
+    std::ofstream chunkFile( filename, std::ios::binary | std::ios::app );
+
+    uint32_t length             = htonl(chunk.getLength());  // Convert to network byte order
+    uint32_t typeCode           = htonl(chunk.getTypeCode()); // Convert to network byte order
+    std::vector<std::byte> data = chunk.getData();
+    uint32_t crc                = htonl(chunk.getCRC()); // Convert to network byte order
+
+    if (chunkFile)
+    {
+        chunkFile.write(reinterpret_cast<char*>(&length), sizeof(length));
+        chunkFile.write(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
+        chunkFile.write(reinterpret_cast<char*>(data.data()), data.size());
+
+        std::cout << __FILE__ << "::" << __LINE__ << "ADD CRC GENRATION HERE" << std::endl;
+        chunkFile.write(reinterpret_cast<char*>(&crc), sizeof(crc));
+
+        writeSuccess = true;
+    }
+
+    chunkFile.close();
+
+    return(writeSuccess);
 }
 
 size_t

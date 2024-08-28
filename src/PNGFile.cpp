@@ -1,5 +1,15 @@
 #include "PNGFile.hpp"
 #include "PNGIOTypes.hpp"
+
+/// ********************************************************** ///
+/// \name load
+///
+/// \brief Loads a png from a file.
+///
+/// \param filename : std::string - name of the file to load.
+///
+/// \return bool - true on success, false on fail.
+/// ********************************************************** ///
 bool
 PNGFile::load( const std::string &filename )
 {
@@ -46,4 +56,21 @@ PNGFile::load( const std::string &filename )
 
 
     return( readSuccess );
+}
+
+/// ********************************************************** ///
+/// \name write
+///
+/// \brief Writes a PNGFile object from to a file.
+///
+/// \param filename : std::string - name of the file to write to.
+///
+/// \return bool - true on success, false on fail.
+/// ********************************************************** ///
+bool
+PNGFile::write( const std::string &filename )
+{
+    bool fileWritten(false);
+
+    return(fileWritten);
 }

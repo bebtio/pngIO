@@ -195,3 +195,40 @@ TEST( PNGChunkTest, ChunksContentsTest )
     // IEND has no data so we just need to check that the data vector size is 0 here.
     ASSERT_EQ( IENDChunk.getData().size(), 0 );
 }
+
+// *************************************************** //
+// Test name: PNGChunkTest.WriteToFileTest
+//
+// 
+//
+// *************************************************** //
+TEST( PNGChunkTest, WriteToFileTest )
+{
+    std::filesystem::path input( INPUT_DIR );
+    input /= "testImage.png";
+
+    std::filesystem::path output( OUTPUT_DIR );
+    output /= "PNGChunkTest_WriteToFileTest_chunk.txt";
+
+    PNGFile inputPng;
+    inputPng.load( input );
+
+    // Read the first chunk of the PNG file.
+    PNGChunk chunk( inputPng.getChunks()[0] );
+
+    // Check that we completed the write to the file.
+    ASSERT_TRUE( writePNGChunk( chunk, output.string() ) ) << "Failed to write file: " << output.string();
+
+    // The the written chunk back in.
+    PNGChunk reReadChunk = readPNGChunk( output.string(), 0 );
+
+    // Compare the size in bytes, typecode, and CRC of both chunks to make sure they are the same.
+    ASSERT_EQ( chunk.getSizeInBytes(), reReadChunk.getSizeInBytes() );
+    ASSERT_EQ( chunk.getTypeCode(),    reReadChunk.getTypeCode()    );
+    ASSERT_EQ( chunk.getCRC(),         reReadChunk.getCRC()         );
+
+    for( size_t i = 0; i < chunk.getData().size(); i++ )
+    {
+        ASSERT_EQ( chunk.getData()[i], reReadChunk.getData()[i] );
+    }
+}
