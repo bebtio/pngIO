@@ -203,6 +203,12 @@ TEST_F( PNGChunkTest, WriteToFileTest )
 {
     std::filesystem::path output( getOutputDir() / "PNGChunkTest_WriteToFileTest_chunk.txt");
 
+    // Remove the file if it exists.
+    if( std::filesystem::exists( output ) )
+    {
+        std::filesystem::remove( output );
+    }
+
     // Read the first chunk of the PNG file.
     PNGChunk chunk( readPNGChunk(getTestImagePath(), 8) );
 
@@ -224,6 +230,12 @@ TEST_F( PNGChunkTest, WriteToFileTest )
     }
 }
 
+// *************************************************** //
+//
+// Sets up the input dir and output dir variables so I
+// can use them in all my tests.
+//
+// *************************************************** //
 void PNGChunkTest::SetUp()
 {
     _testImagePath = std::filesystem::path(INPUT_DIR) / "testImage.png";
@@ -234,9 +246,4 @@ void PNGChunkTest::SetUp()
     {
         std::filesystem::create_directories(_outputDir);
     }
-}
-
-void PNGChunkTest::TearDown()
-{
-
 }

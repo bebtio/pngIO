@@ -10,7 +10,7 @@ class PNGChunkTest : public testing::Test
 
 public:
     void SetUp();
-    void TearDown();
+    void TearDown() {};
 
     std::filesystem::path getTestImagePath() { return( _testImagePath ); }
     std::filesystem::path getOutputDir()     { return( _outputDir );     }
