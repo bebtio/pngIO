@@ -4,6 +4,8 @@ set(projectName pngio)
 
 project(${projectName})
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 file(GLOB SRCS src/*.cpp)
 
 include_directories(include)
