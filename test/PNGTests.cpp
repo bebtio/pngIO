@@ -12,28 +12,34 @@
 #include "PNGIOTypes.hpp"
 
 // *************************************************** //
-// Test name: PNGTests.ReadHeaderTest
+// Test name: PNGTests.ReadValidSignatureTest
 // 
-// 1. Reads the signature of the testImage.png file.
-// 2. Checks that the signature is exactly eight bytes
-// 3. then compares the bytes to the png signature: 137 80 78 71 13 10 26 10
+// Checks that the hasPNGSgnature function returns true
+// when reading valid png file.
 //
-// If either steps 2. or 3. fails, the test fails.
 // *************************************************** //
-TEST_F( PNGTests, ReadSignatureTest )
+TEST_F( PNGTests, ReadValidSignatureTest )
 {
-    std::vector<std::byte> header = readPNGSignature( getTestImagePath().string() );
+    bool sigExists = hasPNGSignature( getTestImagePath().string() );
 
     // The header should contain exactly 8 bytes.
-    ASSERT_EQ( header.size(), 8 );
-
-    // Compare each of the 8 bytes to the PNG file signature.
-    for( size_t i = 0; i < pngIO::signature.size(); i++ )
-    {
-        ASSERT_EQ( static_cast<uint8_t>(header[i]), pngIO::signature[i] );
-    }
+    ASSERT_TRUE( sigExists );
 }
 
+// *************************************************** //
+// Test name: PNGTests.ReadInvalidSignatureTest
+// 
+// Checks that the hasPNGSgnature function returns false
+// when reading an invalid png file.
+//
+// *************************************************** //
+TEST_F( PNGTests, ReadInvalidSignatureTest )
+{
+    bool sigExists = hasPNGSignature( getInputDir() / "fakeImage.png" );
+
+    // The header should contain exactly 8 bytes.
+    ASSERT_FALSE( sigExists );
+}
 // *************************************************** //
 // Test name: PNGTests.ReadChunkFailTest
 // 
@@ -274,7 +280,7 @@ TEST_F( PNGTests, WriteChunkToFileTest )
 TEST_F( PNGTests, WritePNGToFileTest )
 {
 
-
+    FAIL();
 }
 
 // *************************************************** //

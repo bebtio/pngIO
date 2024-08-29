@@ -2,49 +2,59 @@
 
 #include "PNGIOTypes.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 
 
-// ************************************************************************** //
-//
-//
-// ************************************************************************** //
-std::vector<std::byte>
-readPNGSignature( const std::string &filename )
+/// ************************************************************************** ///
+/// \name readPNGSignature
+///
+/// \brief Reads the first 8 bytes of a file
+///
+/// ************************************************************************** ///
+bool
+hasPNGSignature( const std::string &filename )
 {
-    std::vector<std::byte> sigData;
+    bool sigFound(false);
+
+    std::vector<uint8_t> sigData;
     char byte;
     std::ifstream pngFile( filename, std::ios::binary );
     
-    const size_t pngFileSignatureSize(8);
-    
     if( pngFile.good() )
     {
-        for( size_t i = 0; i < pngFileSignatureSize; i++ )
+        for( size_t i = 0; i < pngIO::signature.size(); i++ )
         {
             pngFile.read(&byte, 1);
-            sigData.push_back(std::byte(byte));
+            sigData.push_back(byte);
         }
     }
 
     pngFile.close();
 
-    return( sigData );
+    // Compare what we read in to what we know is the png signature.
+
+    if( std::equal( sigData.begin(), sigData.end(), pngIO::signature.begin() ) )
+    {
+        sigFound = true;
+    }
+    
+    return(sigFound);
 }
 
-// ************************************************************************** //
-// \brief Reads a png file's chunk data at location offset.
-//        Returns the number of bytes 
-// Because PNG's are stored in network byte order, we should call ntoh[ls]
-// as we read in the data to get the correct endianess for our machine.
-// will return a chunk of size bytes 0 on error.
-//
-// \param[in]  filename  - name of the png file to read in.
-// \param[in]  offset    - how many bytes into the file to read in the png chunkd.
-//
-// \return PNGChunk
-// ************************************************************************** //
+/// ************************************************************************** ///
+/// \brief Reads a png file's chunk data at location offset.
+///        Returns the number of bytes 
+/// Because PNG's are stored in network byte order, we should call ntoh[ls]
+/// as we read in the data to get the correct endianess for our machine.
+/// will return a chunk of size bytes 0 on error.
+///
+/// \param[in]  filename  - name of the png file to read in.
+/// \param[in]  offset    - how many bytes into the file to read in the png chunkd.
+///
+/// \return PNGChunk
+/// ************************************************************************** ///
 PNGChunk 
 readPNGChunk( const std::string &filename, size_t offset )
 {

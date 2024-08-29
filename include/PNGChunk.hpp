@@ -48,8 +48,8 @@ private:
 
 };
 
-std::vector<std::byte> 
-readPNGSignature( const std::string &filename );
+bool
+hasPNGSignature( const std::string &filename );
 
 PNGChunk 
 readPNGChunk( const std::string &filename, size_t offset );
