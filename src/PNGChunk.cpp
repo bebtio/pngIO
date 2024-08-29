@@ -1,4 +1,7 @@
 #include "PNGChunk.hpp"
+
+#include "PNGIOTypes.hpp"
+
 #include <iostream>
 #include <string>
 
@@ -51,10 +54,10 @@ readPNGChunk( const std::string &filename, size_t offset )
     // open the file for reading.
     std::ifstream pngFile( filename, std::ios::binary );
     
-    uint32_t length(0);
-    uint32_t typeCode(0);
+    uint32_t               length(0);
+    uint32_t               typeCode(0);
     std::vector<std::byte> data(0);
-    uint32_t crc(0);
+    uint32_t               crc(0);
 
     if( pngFile.good() )
     {
@@ -63,25 +66,32 @@ readPNGChunk( const std::string &filename, size_t offset )
 
         // Read the length element, this will tell how many bytes to read from the data portion of the chunk.
         pngFile.read(reinterpret_cast<char*>(&length), sizeof(length));
-        chunk.setLength(ntohl(length));
+        length = ntohl(length);
+        chunk.setLength(length);
 
         // Next read the typeCode, this will tell us what kind of data this chunk contains.
         pngFile.read(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
-        chunk.setTypeCode(ntohl(typeCode));
+        typeCode = ntohl(typeCode);
+        chunk.setTypeCode(typeCode);
 
-        // Resize the data to the length read in.
-        data.resize(chunk.getLength());
+        // We only continue the read if the type code is valid!
+        if( chunk.isValid() ) 
+        {
+            // Resize the data to the length read in.
+            data.resize(length);
 
-        // Loop over the bytes and read them in.
-        pngFile.read(reinterpret_cast<char*>(&data[0]), chunk.getLength());
-        chunk.setData(data);
-    
-        // Lastly read in the CRC. We won't do error checking on the chunks quite yet.
-        pngFile.read(reinterpret_cast<char*>(&crc), sizeof(crc));
-        chunk.setCRC(ntohl(crc));
+            // Loop over the bytes and read them in.
+            pngFile.read(reinterpret_cast<char*>(&data[0]), length);
+            chunk.setData(data);
 
-        std::cout << __FILE__ << ":" << __LINE__ << ":";
-        std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
+            // Lastly read in the CRC. We won't do error checking on the chunks quite yet.
+            pngFile.read(reinterpret_cast<char*>(&crc), sizeof(crc));
+            crc = ntohl(crc);
+            chunk.setCRC(crc);
+
+            std::cout << __FILE__ << ":" << __LINE__ << ":";
+            std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
+        }
     }
 
     pngFile.close();
@@ -107,7 +117,7 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
         chunkFile.write(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
         chunkFile.write(reinterpret_cast<char*>(data.data()), data.size());
 
-        std::cout << __FILE__ << "::" << __LINE__ << "ADD CRC GENRATION HERE" << std::endl;
+        std::cout << __FILE__ << "::" << __LINE__ << ": ADD CRC GENERATION HERE" << std::endl;
         chunkFile.write(reinterpret_cast<char*>(&crc), sizeof(crc));
 
         writeSuccess = true;
@@ -119,7 +129,7 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
 }
 
 size_t
-PNGChunk::getSizeInBytes()
+PNGChunk::getSizeInBytes() const
 {
     size_t chunkSize(0);
 
@@ -130,7 +140,39 @@ PNGChunk::getSizeInBytes()
     return(chunkSize);
 }
 
-std::string PNGChunk::toString()
+bool
+PNGChunk::isValid() const
+{
+    bool isValid(false);
+    
+    switch (_typeCode)
+    {
+        case static_cast<uint32_t>(pngIO::TypeCodes::IHDR):
+        case static_cast<uint32_t>(pngIO::TypeCodes::PLTE):
+        case static_cast<uint32_t>(pngIO::TypeCodes::IDAT):
+        case static_cast<uint32_t>(pngIO::TypeCodes::IEND):
+        case static_cast<uint32_t>(pngIO::TypeCodes::cHRM):
+        case static_cast<uint32_t>(pngIO::TypeCodes::gAMA):
+        case static_cast<uint32_t>(pngIO::TypeCodes::iCCP):
+        case static_cast<uint32_t>(pngIO::TypeCodes::sBIT):
+        case static_cast<uint32_t>(pngIO::TypeCodes::sRGB):
+        case static_cast<uint32_t>(pngIO::TypeCodes::bKGD):
+        case static_cast<uint32_t>(pngIO::TypeCodes::hIST):
+        case static_cast<uint32_t>(pngIO::TypeCodes::tRNS):
+        case static_cast<uint32_t>(pngIO::TypeCodes::pHYs):
+        case static_cast<uint32_t>(pngIO::TypeCodes::sPLT):
+        case static_cast<uint32_t>(pngIO::TypeCodes::tIME):
+        case static_cast<uint32_t>(pngIO::TypeCodes::iTXt):
+        case static_cast<uint32_t>(pngIO::TypeCodes::tEXt):
+        case static_cast<uint32_t>(pngIO::TypeCodes::zTXt):
+            return true;
+        default:
+            return false;
+    }
+    return(isValid);
+}
+
+std::string PNGChunk::toString() const
 {
     std::stringstream ss;
 

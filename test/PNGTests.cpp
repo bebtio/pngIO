@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "PNGFile.hpp"
 #include "PNGChunk.hpp"
@@ -34,7 +35,50 @@ TEST_F( PNGTests, ReadSignatureTest )
 }
 
 // *************************************************** //
-// Test name: PNGTests.NumChunksTest
+// Test name: PNGTests.ReadChunkFailTest
+// 
+// This test what occurs when the readPNGChunk reads in a
+// file that doesn't exist.
+// 
+// The readPNGChunk function should, in this case return
+// a PNGChunk object with no data. Each of the elements:
+// length, typeCode, data, and CRC should be 0.
+// The getSizeInBytes should only return the sum of the
+// length, typeCode, and crc member variables for a 
+// total size of 12 bytes.
+//
+// The test passes if each of the following ASSERT_EQ's
+// are true. Fails otherwise.
+// *************************************************** //
+TEST_F( PNGTests, ReadChunkFailTest )
+{
+    PNGChunk chunk = readPNGChunk( "bogusPath.txt", 8 );
+
+    // If we fail to read, the readPNGChunk function should return a struct
+    // of elements all valued at 0, with a size of 12 bytes.
+    // 4 for the length : uint32_t,
+    // 4 for the typeCode: uint32_t,
+    // 4 for the crc: unit32_t.
+    ASSERT_EQ( chunk.getLength(),      0  );
+    ASSERT_EQ( chunk.getTypeCode(),    0  );
+    ASSERT_EQ( chunk.getData().size(), 0  );
+    ASSERT_EQ( chunk.getCRC(),         0  );
+    ASSERT_EQ( chunk.getSizeInBytes(), 12 );
+}
+
+// *************************************************** //
+//
+// *************************************************** //
+TEST_F( PNGTests, ReadChunkBadFormat )
+{
+    std::cout << getInputDir() / "fakeImage.png" << std::endl;
+    PNGChunk chunk = readPNGChunk( getInputDir() / "fakeImage.png", 8 );
+
+    // If we read in a file that doesn't have a valid png data, the va
+    ASSERT_FALSE( chunk.isValid() );
+}
+// *************************************************** //
+// Test name: PNGTests.ReadNumChunksTest
 //
 // Test the testImage.png has exactly 3 chunks.
 // They are the IHDR, IDAT, and IEND chunks
@@ -54,7 +98,7 @@ TEST_F( PNGTests, ReadSignatureTest )
 // If the chunk size or data length vary from the inspected values
 // this test fails.
 // *************************************************** //
-TEST_F( PNGTests, NumChunksTest )
+TEST_F( PNGTests, ReadNumChunksTest )
 {
     PNGFile png;
     png.load( getTestImagePath().string() );
@@ -87,7 +131,7 @@ TEST_F( PNGTests, NumChunksTest )
 }
 
 // *************************************************** //
-// Test name: PNGTests.ChunksContentsTest
+// Test name: PNGTests.ReadChunksContentsTest
 //
 // This test compares the contents read out by the xxd tool
 // when ran on testImage.png to what the PNGFile class reads in
@@ -128,7 +172,7 @@ TEST_F( PNGTests, NumChunksTest )
 // The structure of this output is described here: http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
 //
 // *************************************************** //
-TEST_F( PNGTests, ChunksContentsTest )
+TEST_F( PNGTests, ReadChunksContentsTest )
 {
     PNGFile png;
     png.load( getTestImagePath().string() );
@@ -230,6 +274,13 @@ TEST_F( PNGTests, WriteChunkToFileTest )
     }
 }
 
+
+TEST_F( PNGTests, WritePNGToFileTest )
+{
+
+
+}
+
 // *************************************************** //
 //
 // Sets up the input dir and output dir variables so I
@@ -239,6 +290,7 @@ TEST_F( PNGTests, WriteChunkToFileTest )
 void PNGTests::SetUp()
 {
     _testImagePath = std::filesystem::path(INPUT_DIR) / "testImage.png";
+    _inputDir      = INPUT_DIR;
     _outputDir     = OUTPUT_DIR;
 
     // Create the output directory if it does not exist yet.

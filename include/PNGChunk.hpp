@@ -34,9 +34,11 @@ public:
     void setData    ( const std::vector<std::byte> &data ) { this->_data     = data;     }
     void setCRC     ( uint32_t crc )                       { this->_crc      = crc;      }
 
-    size_t getSizeInBytes();
+    size_t getSizeInBytes() const;
 
-    std::string toString();
+    bool isValid() const;
+
+    std::string toString() const;
 
 private:
     uint32_t               _length;
