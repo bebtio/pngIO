@@ -10,31 +10,31 @@
 /// ************************************************************************** ///
 /// \name readPNGSignature
 ///
-/// \brief Reads the first 8 bytes of a file
+/// \brief Returns true if the file read in has a valid png signature. Otherwise
+///        returns false. 
 ///
+/// \param[in] filename - a string containing the filename to check for a valid
+///                       png signature.
+///
+/// \return bool
 /// ************************************************************************** ///
 bool
 hasPNGSignature( const std::string &filename )
 {
     bool sigFound(false);
 
-    std::vector<uint8_t> sigData;
-    char byte;
+    std::vector<uint8_t> sigData(pngIO::signature.size());
+
     std::ifstream pngFile( filename, std::ios::binary );
     
-    if( pngFile.good() )
+    if( pngFile.is_open() )
     {
-        for( size_t i = 0; i < pngIO::signature.size(); i++ )
-        {
-            pngFile.read(&byte, 1);
-            sigData.push_back(byte);
-        }
+        pngFile.read(reinterpret_cast<char*>(sigData.data()), pngIO::signature.size());
     }
 
     pngFile.close();
 
     // Compare what we read in to what we know is the png signature.
-
     if( std::equal( sigData.begin(), sigData.end(), pngIO::signature.begin() ) )
     {
         sigFound = true;
