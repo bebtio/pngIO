@@ -22,7 +22,6 @@ TEST_F( PNGTests, ReadValidSignatureTest )
 {
     bool sigExists = hasPNGSignature( getTestImagePath().string() );
 
-    // The header should contain exactly 8 bytes.
     ASSERT_TRUE( sigExists );
 }
 
@@ -37,9 +36,9 @@ TEST_F( PNGTests, ReadInvalidSignatureTest )
 {
     bool sigExists = hasPNGSignature( getInputDir() / "fakeImage.png" );
 
-    // The header should contain exactly 8 bytes.
     ASSERT_FALSE( sigExists );
 }
+
 // *************************************************** //
 // Test name: PNGTests.ReadChunkFailTest
 // 
