@@ -275,6 +275,10 @@ TEST_F( PNGTests, WriteChunkToFileTest )
     }
 }
 
+TEST_F( PNGTests, CRCTest )
+{
+    FAIL();
+}
 
 TEST_F( PNGTests, WritePNGToFileTest )
 {

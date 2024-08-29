@@ -14,32 +14,34 @@
 bool
 PNGFile::load( const std::string &filename )
 {
-    bool readSuccess(true);
-    bool doneReading(false);
-    bool isPng(hasPNGSignature(filename));
-    size_t offset(pngIO::signature.size());
+    bool readSuccess = hasPNGSignature(filename);
+    size_t offset = pngIO::signature.size();
 
-    std::vector<PNGChunk> chunks;
-
-    // Keep reading chunks, incrementing the offset by the size of each chunk
-    // until we reach the IEND chunk which is 0x49454e44 in hex.
-    while( doneReading != true && isPng )
+    // Continue reading until the IEND chunk is found or an error occurs.
+    while( readSuccess )
     {
-        PNGChunk chunk = readPNGChunk( filename, offset );
+        PNGChunk chunk = readPNGChunk(filename, offset);
 
+        if( !chunk.isValid() )
+        {
+            // If an invalid chunk is found, clear the chunks and exit the loop.
+            readSuccess = false;
+            this->_chunks.clear();
+            break;
+        }
+
+        // Add the chunk and update the offset.
         offset += chunk.getSizeInBytes();
+        this->_chunks.push_back(chunk);
 
-        chunks.push_back(chunk);
-
+        // Check if we've reached the IEND chunk.
         if( chunk.getTypeCode() == static_cast<uint32_t>(pngIO::TypeCodes::IEND) )
         {
-            doneReading = true;
+            break;
         }
     }
 
-    this->_chunks = chunks;
-
-    return( readSuccess );
+    return readSuccess;
 }
 
 /// ********************************************************** ///
