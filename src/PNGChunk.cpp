@@ -92,6 +92,13 @@ readPNGChunk( const std::string &filename, size_t offset )
             std::cout << __FILE__ << ":" << __LINE__ << ":";
             std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
         }
+        else
+        {
+            // If the type code is invalid reset the member we have 
+            // set previously.
+            chunk.setLength(0);
+            chunk.setTypeCode(0);
+        }
     }
 
     pngFile.close();

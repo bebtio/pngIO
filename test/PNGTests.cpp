@@ -40,33 +40,27 @@ TEST_F( PNGTests, ReadSignatureTest )
 // This test what occurs when the readPNGChunk reads in a
 // file that doesn't exist.
 // 
-// The readPNGChunk function should, in this case return
-// a PNGChunk object with no data. Each of the elements:
-// length, typeCode, data, and CRC should be 0.
-// The getSizeInBytes should only return the sum of the
-// length, typeCode, and crc member variables for a 
-// total size of 12 bytes.
+// In this case the PNGChunk::isValid() should return false.
+// Test succeeds if it does.
+// Fails otherwise.
 //
-// The test passes if each of the following ASSERT_EQ's
-// are true. Fails otherwise.
 // *************************************************** //
 TEST_F( PNGTests, ReadChunkFailTest )
 {
     PNGChunk chunk = readPNGChunk( "bogusPath.txt", 8 );
 
-    // If we fail to read, the readPNGChunk function should return a struct
-    // of elements all valued at 0, with a size of 12 bytes.
-    // 4 for the length : uint32_t,
-    // 4 for the typeCode: uint32_t,
-    // 4 for the crc: unit32_t.
-    ASSERT_EQ( chunk.getLength(),      0  );
-    ASSERT_EQ( chunk.getTypeCode(),    0  );
-    ASSERT_EQ( chunk.getData().size(), 0  );
-    ASSERT_EQ( chunk.getCRC(),         0  );
-    ASSERT_EQ( chunk.getSizeInBytes(), 12 );
+    ASSERT_FALSE( chunk.isValid() );
 }
 
 // *************************************************** //
+// Test name: PNGTests.ReadChunkBadFormat
+//
+// This test tests what happens if we read in a file that
+// that isn't a png or isn't formatted properly.
+//
+// In this case the PNGChunk::isValid() should return false.
+// Test succeeds if it does.
+// Fails otherwise.
 //
 // *************************************************** //
 TEST_F( PNGTests, ReadChunkBadFormat )
@@ -77,6 +71,7 @@ TEST_F( PNGTests, ReadChunkBadFormat )
     // If we read in a file that doesn't have a valid png data, the va
     ASSERT_FALSE( chunk.isValid() );
 }
+
 // *************************************************** //
 // Test name: PNGTests.ReadNumChunksTest
 //
@@ -97,6 +92,7 @@ TEST_F( PNGTests, ReadChunkBadFormat )
 //
 // If the chunk size or data length vary from the inspected values
 // this test fails.
+//
 // *************************************************** //
 TEST_F( PNGTests, ReadNumChunksTest )
 {
