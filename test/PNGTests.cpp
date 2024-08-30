@@ -1,41 +1,84 @@
+#include "PNGTests.hpp"
+
 #include <filesystem>
 #include <string>
 #include <vector>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include "PNGFile.hpp"
 #include "PNGChunk.hpp"
 #include "PNGIOTypes.hpp"
 
 // *************************************************** //
-// Test name: PNGChunkTest.ReadHeaderTest
+// Test name: PNGTests.ReadValidSignatureTest
 // 
-// 1. Reads the signature of the testImage.png file.
-// 2. Checks that the signature is exactly eight bytes
-// 3. then compares the bytes to the png signature: 137 80 78 71 13 10 26 10
+// Checks that the hasPNGSgnature function returns true
+// when reading valid png file.
 //
-// If either steps 2. or 3. fails, the test fails.
 // *************************************************** //
-TEST( PNGChunkTest, ReadSignatureTest )
+TEST_F( PNGTests, ReadValidSignatureTest )
 {
-    std::filesystem::path p(INPUT_DIR);
-    p /= "testImage.png";    
+    bool sigExists = hasPNGSignature( getTestImagePath().string() );
 
-    std::vector<std::byte> header = readPNGSignature( p.string() );
-
-    // The header should contain exactly 8 bytes.
-    ASSERT_EQ( header.size(), 8 );
-
-    // Compare each of the 8 bytes to the PNG file signature.
-    for( size_t i = 0; i < pngIO::signature.size(); i++ )
-    {
-        ASSERT_EQ( static_cast<uint8_t>(header[i]), pngIO::signature[i] );
-    }
+    ASSERT_TRUE( sigExists );
 }
 
 // *************************************************** //
-// Test name: PNGChunkTest.NumChunksTest
+// Test name: PNGTests.ReadInvalidSignatureTest
+// 
+// Checks that the hasPNGSgnature function returns false
+// when reading an invalid png file.
+//
+// *************************************************** //
+TEST_F( PNGTests, ReadInvalidSignatureTest )
+{
+    bool sigExists = hasPNGSignature( getInputDir() / "fakeImage.png" );
+
+    ASSERT_FALSE( sigExists );
+}
+
+// *************************************************** //
+// Test name: PNGTests.ReadChunkFailTest
+// 
+// This test what occurs when the readPNGChunk reads in a
+// file that doesn't exist.
+// 
+// In this case the PNGChunk::isValid() should return false.
+// Test succeeds if it does.
+// Fails otherwise.
+//
+// *************************************************** //
+TEST_F( PNGTests, ReadChunkFailTest )
+{
+    PNGChunk chunk = readPNGChunk( "bogusPath.txt", 8 );
+
+    ASSERT_FALSE( chunk.isValid() );
+}
+
+// *************************************************** //
+// Test name: PNGTests.ReadChunkBadFormat
+//
+// This test tests what happens if we read in a file that
+// that isn't a png or isn't formatted properly.
+//
+// In this case the PNGChunk::isValid() should return false.
+// Test succeeds if it does.
+// Fails otherwise.
+//
+// *************************************************** //
+TEST_F( PNGTests, ReadChunkBadFormat )
+{
+    std::cout << getInputDir() / "fakeImage.png" << std::endl;
+    PNGChunk chunk = readPNGChunk( getInputDir() / "fakeImage.png", 8 );
+
+    // If we read in a file that doesn't have a valid png data, the va
+    ASSERT_FALSE( chunk.isValid() );
+}
+
+// *************************************************** //
+// Test name: PNGTests.ReadNumChunksTest
 //
 // Test the testImage.png has exactly 3 chunks.
 // They are the IHDR, IDAT, and IEND chunks
@@ -54,14 +97,12 @@ TEST( PNGChunkTest, ReadSignatureTest )
 //
 // If the chunk size or data length vary from the inspected values
 // this test fails.
+//
 // *************************************************** //
-TEST( PNGChunkTest, NumChunksTest )
+TEST_F( PNGTests, ReadNumChunksTest )
 {
-    std::filesystem::path p(INPUT_DIR);
-    p /= "testImage.png";
-
     PNGFile png;
-    png.load( p.string() );
+    png.load( getTestImagePath().string() );
 
     std::vector<PNGChunk> chunks = png.getChunks();    
     
@@ -91,7 +132,7 @@ TEST( PNGChunkTest, NumChunksTest )
 }
 
 // *************************************************** //
-// Test name: PNGChunkTest.ChunksContentsTest
+// Test name: PNGTests.ReadChunksContentsTest
 //
 // This test compares the contents read out by the xxd tool
 // when ran on testImage.png to what the PNGFile class reads in
@@ -132,14 +173,10 @@ TEST( PNGChunkTest, NumChunksTest )
 // The structure of this output is described here: http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
 //
 // *************************************************** //
-TEST( PNGChunkTest, ChunksContentsTest )
+TEST_F( PNGTests, ReadChunksContentsTest )
 {
-
-    std::filesystem::path p(INPUT_DIR);
-    p /= "testImage.png";
-
     PNGFile png;
-    png.load( p.string() );
+    png.load( getTestImagePath().string() );
 
     std::vector<PNGChunk> chunks = png.getChunks();    
 
@@ -194,4 +231,121 @@ TEST( PNGChunkTest, ChunksContentsTest )
 
     // IEND has no data so we just need to check that the data vector size is 0 here.
     ASSERT_EQ( IENDChunk.getData().size(), 0 );
+}
+
+// *************************************************** //
+// Test name: PNGTests.WriteChunkToFileTest
+//
+// Test procedure.
+// 1. Reads in a known PNGChunk (chunk) from testImage.png 
+// 2. Writes that same PNGChunk back to a file ("PNGTests_WriteToFileTest_chunk.txt").
+// 3. Reads in that new PNGChunk (reReadChunk).
+// 4. Compares the original, chunk, to the copy, reReadChunk.
+// 5. If their contents are identical, the test passes.
+//    Fails otherwise.
+// *************************************************** //
+TEST_F( PNGTests, WriteChunkToFileTest )
+{
+    std::filesystem::path output( getOutputDir() / "PNGTests_WriteChunkToFileTest_chunk.txt");
+
+    // Remove the file if it exists.
+    if( std::filesystem::exists( output ) )
+    {
+        std::filesystem::remove( output );
+    }
+
+    // Read the first chunk of the PNG file.
+    PNGChunk chunk( readPNGChunk(getTestImagePath(), 8) );
+
+    // Check that we completed the write to the file.
+    ASSERT_TRUE( writePNGChunk( chunk, output.string() ) ) << "Failed to write file: " << output.string();
+
+    // The the written chunk back in.
+    PNGChunk reReadChunk = readPNGChunk( output.string(), 0 );
+
+    // Compare the size in bytes, typecode, and CRC of both chunks to make sure they are the same.
+    ASSERT_EQ( chunk.getSizeInBytes(), reReadChunk.getSizeInBytes() );
+    ASSERT_EQ( chunk.getLength(),      reReadChunk.getLength()      );
+    ASSERT_EQ( chunk.getTypeCode(),    reReadChunk.getTypeCode()    );
+    ASSERT_EQ( chunk.getCRC(),         reReadChunk.getCRC()         );
+
+    for( size_t i = 0; i < chunk.getData().size(); i++ )
+    {
+        ASSERT_EQ( chunk.getData()[i], reReadChunk.getData()[i] );
+    }
+}
+
+
+// *************************************************** //
+// Test name: PNGTests.WritePNGToFileTest
+//
+// Test procedure.
+// 1. Reads in a known PNGFile from testImage.png 
+// 2. Writes that same PNGFile back to a file. 
+// 3. Reads in that new PNGFile.
+// 4. Compares the original png to the copy.
+// 5. If their contents are identical, the test passes.
+//    Fails otherwise.
+// *************************************************** //
+TEST_F( PNGTests, WritePNGToFileTest )
+{
+    std::filesystem::path outputFilename( getOutputDir() / "WritePNGToFileTest.png" );
+    PNGFile png;
+    PNGFile newPng;
+
+    // Load in the test image.
+    png.load( getTestImagePath() );
+
+    // Write out the contents of a the test image to a new png.
+    png.write( outputFilename );
+
+    // Re-read that png and compare what we read in to our original image.
+    newPng.load( outputFilename );
+
+    // First make sure that each png has the same number of chunk elements.
+    ASSERT_EQ( png.getChunks().size(), newPng.getChunks().size() );
+
+    // Loop over the chunks and compare their members.
+    for( size_t i = 0; i < png.getChunks().size(); i++ )
+    {
+        ASSERT_EQ( png.getChunks().at(i).getSizeInBytes(), newPng.getChunks().at(i).getSizeInBytes() );
+        ASSERT_EQ( png.getChunks().at(i).getCRC(),         newPng.getChunks().at(i).getCRC() );
+        ASSERT_EQ( png.getChunks().at(i).getLength(),      newPng.getChunks().at(i).getLength() );
+        ASSERT_EQ( png.getChunks().at(i).getTypeCode(),    newPng.getChunks().at(i).getTypeCode() );
+
+        // Finally if the chunk has data in it, compare each of the elements in the data vector.
+        for( size_t j = 0; j < png.getChunks().at(i).getData().size(); j++ )
+        {
+            ASSERT_EQ(
+                        png.getChunks().at(i).getData().at(j),
+                        newPng.getChunks().at(i).getData().at(j) 
+                     );
+        }
+    }
+}
+
+TEST_F( PNGTests, CRCTest )
+{
+    FAIL();
+}
+
+
+
+// *************************************************** //
+//
+// Sets up the input dir and output dir variables so I
+// can use them in all my tests.
+//
+// *************************************************** //
+void PNGTests::SetUp()
+{
+    _testImagePath = std::filesystem::path(INPUT_DIR) / "testImage.png";
+    _inputDir      = INPUT_DIR;
+    _outputDir     = OUTPUT_DIR;
+
+    // Create the output directory if it does not exist yet.
+    if( !std::filesystem::exists(_outputDir) )
+    {
+        std::filesystem::create_directories(_outputDir);
+    }
 }

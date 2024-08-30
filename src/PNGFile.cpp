@@ -1,49 +1,79 @@
 #include "PNGFile.hpp"
+#include "PNGChunk.hpp"
 #include "PNGIOTypes.hpp"
+
+/// ********************************************************** ///
+/// \name load
+///
+/// \brief Loads a png from a file.
+///
+/// \param filename : std::string - name of the file to load.
+///
+/// \return bool - true on success, false on fail.
+/// ********************************************************** ///
 bool
 PNGFile::load( const std::string &filename )
 {
-    bool readSuccess(true);
+    bool readSuccess = hasPNGSignature(filename);
+    size_t offset = pngIO::signature.size();
 
-    std::vector<std::byte> sigData = readPNGSignature(filename);
-    std::vector<PNGChunk> chunks;
-
-    std::cout << "signature:    ";
-
-    for( const std::byte &b : sigData )
+    // Continue reading until the IEND chunk is found or an error occurs.
+    while( readSuccess )
     {
-        std::cout << std::to_integer<int>(b) << " ";
+        PNGChunk chunk = readPNGChunk(filename, offset);
 
-    } 
+        if( !chunk.isValid() )
+        {
+            // If an invalid chunk is found, clear the chunks and exit the loop.
+            readSuccess = false;
+            this->_chunks.clear();
+            break;
+        }
 
-    std::cout << std::endl;
-
-    size_t offset(sigData.size());
-    bool doneReading(false);
-
-    // Keep reading chunks, incrementing the offset by the size of each chunk
-    // until we reach the IEND chunk which is 0x49454e44 in hex.
-    while( doneReading != true )
-    {
-        PNGChunk chunk = readPNGChunk( filename, offset );
-
+        // Add the chunk and update the offset.
         offset += chunk.getSizeInBytes();
+        this->_chunks.push_back(chunk);
 
-        chunks.push_back(chunk);
-
+        // Check if we've reached the IEND chunk.
         if( chunk.getTypeCode() == static_cast<uint32_t>(pngIO::TypeCodes::IEND) )
         {
-            doneReading = true;
+            break;
         }
     }
 
-    this->_chunks = chunks;
+    return readSuccess;
+}
 
-    for( std::byte b : sigData )
+/// ********************************************************** ///
+/// \name write
+///
+/// \brief Writes a PNGFile object from to a file.
+///
+/// \param filename : std::string - name of the file to write to.
+///
+/// \return bool - true on success, false on fail.
+/// ********************************************************** ///
+bool
+PNGFile::write( const std::string &filename )
+{
+    bool fileWritten(writePNGSignature(filename));
+
+    if( fileWritten )
     {
-        this->_signature.push_back( static_cast<uint8_t>(b));
+        for( const PNGChunk &chunk : _chunks )
+        {
+            if( !writePNGChunk( chunk, filename ) )
+            {
+                fileWritten = false;
+                break;
+            }
+        }
     }
 
+    return(fileWritten);
+}
 
-    return( readSuccess );
+void PNGFile::clear()
+{
+    _chunks.clear();
 }
