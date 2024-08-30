@@ -275,16 +275,61 @@ TEST_F( PNGTests, WriteChunkToFileTest )
     }
 }
 
+
+// *************************************************** //
+// Test name: PNGTests.WritePNGToFileTest
+//
+// Test procedure.
+// 1. Reads in a known PNGFile from testImage.png 
+// 2. Writes that same PNGFile back to a file. 
+// 3. Reads in that new PNGFile.
+// 4. Compares the original png to the copy.
+// 5. If their contents are identical, the test passes.
+//    Fails otherwise.
+// *************************************************** //
+TEST_F( PNGTests, WritePNGToFileTest )
+{
+    std::filesystem::path outputFilename( getOutputDir() / "WritePNGToFileTest.png" );
+    PNGFile png;
+    PNGFile newPng;
+
+    // Load in the test image.
+    png.load( getTestImagePath() );
+
+    // Write out the contents of a the test image to a new png.
+    png.write( outputFilename );
+
+    // Re-read that png and compare what we read in to our original image.
+    newPng.load( outputFilename );
+
+    // First make sure that each png has the same number of chunk elements.
+    ASSERT_EQ( png.getChunks().size(), newPng.getChunks().size() );
+
+    // Loop over the chunks and compare their members.
+    for( size_t i = 0; i < png.getChunks().size(); i++ )
+    {
+        ASSERT_EQ( png.getChunks().at(i).getSizeInBytes(), newPng.getChunks().at(i).getSizeInBytes() );
+        ASSERT_EQ( png.getChunks().at(i).getCRC(),         newPng.getChunks().at(i).getCRC() );
+        ASSERT_EQ( png.getChunks().at(i).getLength(),      newPng.getChunks().at(i).getLength() );
+        ASSERT_EQ( png.getChunks().at(i).getTypeCode(),    newPng.getChunks().at(i).getTypeCode() );
+
+        // Finally if the chunk has data in it, compare each of the elements in the data vector.
+        for( size_t j = 0; j < png.getChunks().at(i).getData().size(); j++ )
+        {
+            ASSERT_EQ(
+                        png.getChunks().at(i).getData().at(j),
+                        newPng.getChunks().at(i).getData().at(j) 
+                     );
+        }
+    }
+}
+
 TEST_F( PNGTests, CRCTest )
 {
     FAIL();
 }
 
-TEST_F( PNGTests, WritePNGToFileTest )
-{
 
-    FAIL();
-}
 
 // *************************************************** //
 //

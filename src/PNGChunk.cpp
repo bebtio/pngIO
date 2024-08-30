@@ -44,6 +44,32 @@ hasPNGSignature( const std::string &filename )
 }
 
 /// ************************************************************************** ///
+/// \name writePNGSignature
+///
+/// \brief Writes the png signature to a file. Returns true on success, false if failure.
+///
+/// \param[in] filename - a string containing the filename to write png signature to.
+///
+/// \return bool
+/// ************************************************************************** ///
+bool writePNGSignature( const std::string &filename )
+{
+    bool writeSuccess(false);
+    std::ofstream pngFile( filename, std::ios::binary );
+
+    if( pngFile.is_open() )
+    {
+        pngFile.write( reinterpret_cast<const char*>(pngIO::signature.data()), pngIO::signature.size() );
+
+        writeSuccess = true;
+    }
+
+    pngFile.close();
+
+    return(writeSuccess);
+}
+
+/// ************************************************************************** ///
 /// \brief Reads a png file's chunk data at location offset.
 ///        Returns the number of bytes 
 /// Because PNG's are stored in network byte order, we should call ntoh[ls]

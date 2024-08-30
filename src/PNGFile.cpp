@@ -56,7 +56,24 @@ PNGFile::load( const std::string &filename )
 bool
 PNGFile::write( const std::string &filename )
 {
-    bool fileWritten(false);
+    bool fileWritten(writePNGSignature(filename));
+
+    if( fileWritten )
+    {
+        for( const PNGChunk &chunk : _chunks )
+        {
+            if( !writePNGChunk( chunk, filename ) )
+            {
+                fileWritten = false;
+                break;
+            }
+        }
+    }
 
     return(fileWritten);
+}
+
+void PNGFile::clear()
+{
+    _chunks.clear();
 }

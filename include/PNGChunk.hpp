@@ -51,6 +51,8 @@ private:
 bool
 hasPNGSignature( const std::string &filename );
 
+bool
+writePNGSignature( const std::string &filename );
 PNGChunk 
 readPNGChunk( const std::string &filename, size_t offset );
 

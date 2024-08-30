@@ -11,6 +11,7 @@ public:
     
     bool load( const std::string &filename );
     bool write( const std::string &filename );
+    void clear();
 
     const std::vector<PNGChunk>& getChunks() { return( _chunks ); } 
 
