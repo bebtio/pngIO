@@ -19,6 +19,23 @@ of semantic versioning. So scheme is MAJOR.MINOR.PATCH+TEST_VERSION.
 
 ## [Unreleased]
 
+## [0.4.0] - 2024-08-29
+
+### Added
+
+- Various tests:
+  - ReadChunkFailTest
+  - ReadInvalidSignatureTest
+  - ReadChunkBadFormatTest
+  - WriteChunksToFileTest
+  - WritePNGToFileTest
+
+### Changed
+
+- All the test are now just PNGTests.
+- Renamed the PNGChunkTest.cpp file to PNGTest.
+- All tests to TEST_F's and added PNGChunkTest.hpp to initialize shared file paths.
+
 ## [0.3.0] - 2024-08-25
 
 ### Added 
