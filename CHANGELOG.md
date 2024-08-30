@@ -21,11 +21,25 @@ when changes to the tests have been made without changes being made to the libra
 ## [Unreleased]
 
 - CRC check for PNGReader
-- PNG Writer
   - CRC generator for writes
 - Class or struct for each PNG Chunk type
-  - Enum for chunk types codes
 - Tests, many tests.
+  
+## [0.4.0] - 2024-08-29
+
+### Added
+
+- TypeCode enumerations for all chunk types.
+- Tests for 
+- writePNGSignature function.
+- writePNGCHhunk function.
+- PNGChunk::isValid function
+
+### Changed
+
+- readPNGSignature is now hasPNGSignature.
+- readPNGChunk so that it now checks for a valid typeCode and will stop reading if it doesn't
+  find a valid code. This is very important so we don't go off reading memory that isn't our own.
 
 ## [0.3.0] - 2024-08-25
 
