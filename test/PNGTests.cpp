@@ -326,6 +326,7 @@ TEST_F( PNGTests, WritePNGToFileTest )
 
 TEST_F( PNGTests, CRCTest )
 {
+    
     FAIL();
 }
 

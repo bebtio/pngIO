@@ -82,66 +82,76 @@ bool writePNGSignature( const std::string &filename )
 ///
 /// \return PNGChunk
 /// ************************************************************************** ///
-PNGChunk 
-readPNGChunk( const std::string &filename, size_t offset )
+PNGChunk readPNGChunk(const std::string &filename, size_t offset)
 {
-
     PNGChunk chunk;
 
-    // open the file for reading.
-    std::ifstream pngFile( filename, std::ios::binary );
-    
-    uint32_t               length(0);
-    uint32_t               typeCode(0);
-    std::vector<std::byte> data(0);
-    uint32_t               crc(0);
-
-    if( pngFile.good() )
+    // Open the file for reading.
+    std::ifstream pngFile(filename, std::ios::binary);
+    if( !pngFile.good() )
     {
-        // Skip the first offset bytes to get to the chunk we want.
-        pngFile.ignore(offset);
-
-        // Read the length element, this will tell how many bytes to read from the data portion of the chunk.
-        pngFile.read(reinterpret_cast<char*>(&length), sizeof(length));
-        length = ntohl(length);
-        chunk.setLength(length);
-
-        // Next read the typeCode, this will tell us what kind of data this chunk contains.
-        pngFile.read(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
-        typeCode = ntohl(typeCode);
-        chunk.setTypeCode(typeCode);
-
-        // We only continue the read if the type code is valid!
-        if( chunk.isValid() ) 
-        {
-            // Resize the data to the length read in.
-            data.resize(length);
-
-            // Loop over the bytes and read them in.
-            pngFile.read(reinterpret_cast<char*>(&data[0]), length);
-            chunk.setData(data);
-
-            // Lastly read in the CRC. We won't do error checking on the chunks quite yet.
-            pngFile.read(reinterpret_cast<char*>(&crc), sizeof(crc));
-            crc = ntohl(crc);
-            chunk.setCRC(crc);
-
-            std::cout << __FILE__ << ":" << __LINE__ << ":";
-            std::cout << "ADD PNG CRC CHECK HERE" << std::endl;
-        }
-        else
-        {
-            // If the type code is invalid reset the member we have 
-            // set previously.
-            chunk.setLength(0);
-            chunk.setTypeCode(0);
-        }
+        return chunk; // Return an empty chunk on failure
     }
 
-    pngFile.close();
+    uint32_t length(0);
+    uint32_t typeCode(0);
+    std::vector<std::byte> data;
+    uint32_t crc(0);
+    uint32_t generatedCRC(0);
 
-    return( chunk );
+    // Skip the first offset bytes to get to the chunk we want.
+    pngFile.ignore(offset);
+
+    // Read the length element
+    if( !pngFile.read(reinterpret_cast<char*>(&length), sizeof(length)) )
+    {
+        return chunk; // Return an empty chunk on read failure
+    }
+    length = ntohl(length);
+    chunk.setLength(length);
+
+    // Read the typeCode
+    if( !pngFile.read(reinterpret_cast<char*>(&typeCode), sizeof(typeCode)) )
+    {
+        return chunk; // Return an empty chunk on read failure
+    }
+    typeCode = ntohl(typeCode);
+    chunk.setTypeCode(typeCode);
+
+    // Check if the chunk is valid
+    if( !chunk.isValid() )
+    {
+        std::cerr << "Invalid type code of: 0x" << std::hex << typeCode << std::endl;
+        return chunk; // Return an empty chunk if the type code is invalid
+    }
+
+    // Resize the data vector and read the data
+    data.resize(length);
+    if( !pngFile.read(reinterpret_cast<char*>(data.data()), length) )
+    {
+        return chunk; // Return an empty chunk on read failure
+    }
+    chunk.setData(data);
+
+    // Read the CRC
+    if( !pngFile.read(reinterpret_cast<char*>(&crc), sizeof(crc)) )
+    {
+        return chunk; // Return an empty chunk on read failure
+    }
+    crc = ntohl(crc);
+
+    // Generate the CRC from the chunk data and typeCode
+    generatedCRC = chunk.generateCRC();
+    if( generatedCRC != crc )
+    {
+        std::cerr << "CRC mismatch! Expected: 0x" << std::hex << crc << ", but got: 0x" << generatedCRC << std::endl;
+        return PNGChunk(); // Return an empty chunk on CRC mismatch
+    }
+
+    chunk.setCRC(crc);
+    return chunk;
 }
+
 
 bool
 writePNGChunk( const PNGChunk &chunk, const std::string &filename )
@@ -155,7 +165,7 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
     std::vector<std::byte> data = chunk.getData();
     uint32_t crc                = htonl(chunk.getCRC()); // Convert to network byte order
 
-    if (chunkFile)
+    if( chunkFile )
     {
         chunkFile.write(reinterpret_cast<char*>(&length), sizeof(length));
         chunkFile.write(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
@@ -184,7 +194,8 @@ PNGChunk::getSizeInBytes() const
     return(chunkSize);
 }
 
-bool PNGChunk::setCRC( uint32_t crc )
+uint32_t
+PNGChunk::generateCRC()
 {
     _crcGen.reset();
     // Combine typeCode and data into a single buffer for CRC calculation
@@ -202,19 +213,9 @@ bool PNGChunk::setCRC( uint32_t crc )
                      reinterpret_cast<unsigned char*>(_data.data()) + _data.size());
 
     // Calculate the CRC over the combined typeCode and data
-    unsigned long generatedCRC = _crcGen.crc(crcBuffer.data(), crcBuffer.size());
+    uint32_t generatedCRC = _crcGen.crc(crcBuffer.data(), crcBuffer.size());
 
-    std::cout << std::hex << "generatedCRC: " << generatedCRC << std::endl;    
-    std::cout << std::hex << "original CRC: " << crc << std::endl;
-
-    // Compare calculated CRC with the given CRC
-    if (generatedCRC != crc)
-    {
-        return false; // Return false if the CRCs don't match
-    }
-
-    _crc = crc;
-    return true;
+    return(generatedCRC);
 }
 
 

@@ -35,7 +35,7 @@ public:
     void setLength  ( uint32_t length )                    { this->_length   = length;   }
     void setTypeCode( uint32_t typeCode )                  { this->_typeCode = typeCode; }
     void setData    ( const std::vector<std::byte> &data ) { this->_data     = data;     }
-    bool setCRC     ( uint32_t crc );
+    void setCRC     ( uint32_t crc )                       { this->_crc      = crc;      }
 
     uint32_t generateCRC(); 
     size_t getSizeInBytes() const;
