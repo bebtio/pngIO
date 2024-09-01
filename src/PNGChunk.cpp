@@ -170,8 +170,6 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
         chunkFile.write(reinterpret_cast<char*>(&length), sizeof(length));
         chunkFile.write(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
         chunkFile.write(reinterpret_cast<char*>(data.data()), data.size());
-
-        std::cout << __FILE__ << "::" << __LINE__ << ": ADD CRC GENERATION HERE" << std::endl;
         chunkFile.write(reinterpret_cast<char*>(&crc), sizeof(crc));
 
         writeSuccess = true;
