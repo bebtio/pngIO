@@ -1,5 +1,10 @@
 #include "PNGCRC.hpp"
 
+/// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
+
+/// **************************************************************** //
+///
+/// **************************************************************** //
 PNGCrc::PNGCrc(): 
     _crc_table{0}
 ,   _crc_table_computed(0)
@@ -7,6 +12,10 @@ PNGCrc::PNGCrc():
     make_crc_table();
 }
 
+/// **************************************************************** //
+/// Make the table for a fast CRC.
+/// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
+/// **************************************************************** //
 void PNGCrc::make_crc_table(void)
 {
     unsigned long c;
@@ -28,6 +37,13 @@ void PNGCrc::make_crc_table(void)
     _crc_table_computed = 1;
 }
 
+/// **************************************************************** //
+/// Update a running CRC with the bytes buf[0..len-1]--the CRC
+/// should be initialized to all 1's, and the transmitted value
+/// is the 1's complement of the final running CRC (see the
+/// crc() routine below)).
+/// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
+/// **************************************************************** //
 unsigned long 
 PNGCrc::update_crc(unsigned long crc, unsigned char *buf, int len)
 {
@@ -47,6 +63,10 @@ PNGCrc::update_crc(unsigned long crc, unsigned char *buf, int len)
     return c;
 }
 
+/// **************************************************************** //
+/// Return the CRC of the bytes buf[0..len-1].
+/// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
+/// **************************************************************** //
 unsigned long 
 PNGCrc::crc(unsigned char *buf, int len)
 {
