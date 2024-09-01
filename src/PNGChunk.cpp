@@ -167,10 +167,10 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
 
     if( chunkFile )
     {
-        chunkFile.write(reinterpret_cast<char*>(&length), sizeof(length));
-        chunkFile.write(reinterpret_cast<char*>(&typeCode), sizeof(typeCode));
+        chunkFile.write(reinterpret_cast<char*>(&length),     sizeof(length));
+        chunkFile.write(reinterpret_cast<char*>(&typeCode),   sizeof(typeCode));
         chunkFile.write(reinterpret_cast<char*>(data.data()), data.size());
-        chunkFile.write(reinterpret_cast<char*>(&crc), sizeof(crc));
+        chunkFile.write(reinterpret_cast<char*>(&crc),        sizeof(crc));
 
         writeSuccess = true;
     }

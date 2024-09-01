@@ -325,6 +325,11 @@ TEST_F( PNGTests, WritePNGToFileTest )
     }
 }
 
+// *************************************************** //
+// Test name: PNGTests.GoodCRCTest
+// Compares the known CRC of a pngChunk to the CRC that is read in.
+// If the pngChunk's CRC matches the expected CRC the test passes.
+// *************************************************** //
 TEST_F( PNGTests, GoodCRCTest )
 {
     PNGChunk chunk = readPNGChunk(getTestImagePath(), 8);
@@ -334,6 +339,13 @@ TEST_F( PNGTests, GoodCRCTest )
     ASSERT_EQ( expectedCRC, actualCRC );
 }
 
+// *************************************************** //
+// Test name: PNGTests.BadCRCTest
+// Compares the generatedCRC to a file that contains a
+// hardcoded bogus CRC.
+// If the originalCRC doesn't match the generatedCRC
+// the test passes.
+// *************************************************** //
 TEST_F( PNGTests, BadCRCTest )
 {
     PNGChunk chunk = readPNGChunk(getInputDir(), 0);    
