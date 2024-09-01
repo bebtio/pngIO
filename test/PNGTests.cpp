@@ -1,5 +1,6 @@
 #include "PNGTests.hpp"
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -326,8 +327,13 @@ TEST_F( PNGTests, WritePNGToFileTest )
 
 TEST_F( PNGTests, CRCTest )
 {
-    
-    FAIL();
+    PNGChunk chunk = readPNGChunk(getInputDir(), 0);    
+
+    uint32_t originalCRC( chunk.getCRC() );
+    uint32_t generatedCRC( chunk.generateCRC() );
+
+    ASSERT_NE( originalCRC, generatedCRC );
+
 }
 
 
