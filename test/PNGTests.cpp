@@ -325,7 +325,16 @@ TEST_F( PNGTests, WritePNGToFileTest )
     }
 }
 
-TEST_F( PNGTests, CRCTest )
+TEST_F( PNGTests, GoodCRCTest )
+{
+    PNGChunk chunk = readPNGChunk(getTestImagePath(), 8);
+    uint32_t expectedCRC(38820074);
+    uint32_t actualCRC( chunk.getCRC() );
+    
+    ASSERT_EQ( expectedCRC, actualCRC );
+}
+
+TEST_F( PNGTests, BadCRCTest )
 {
     PNGChunk chunk = readPNGChunk(getInputDir(), 0);    
 
