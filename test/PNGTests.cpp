@@ -10,7 +10,6 @@
 
 #include "PNGFile.hpp"
 #include "PNGChunk.hpp"
-#include "PNGIOTypes.hpp"
 
 // *************************************************** //
 // Test name: PNGTests.ReadValidSignatureTest
@@ -337,6 +336,7 @@ TEST_F( PNGTests, GoodCRCTest )
     uint32_t actualCRC( chunk.getCRC() );
     
     ASSERT_EQ( expectedCRC, actualCRC );
+    ASSERT_EQ( expectedCRC, chunk.generateCRC() );
 }
 
 // *************************************************** //
