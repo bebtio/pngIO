@@ -3,6 +3,7 @@
 #include "PNGIOTypes.hpp"
 
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <string>
 
@@ -182,6 +183,40 @@ PNGChunk::getSizeInBytes() const
 
     return(chunkSize);
 }
+
+bool PNGChunk::setCRC( uint32_t crc )
+{
+    _crcGen.reset();
+    // Combine typeCode and data into a single buffer for CRC calculation
+    std::vector<unsigned char> crcBuffer;
+    
+    // Append the typeCode bytes to the crcBuffer
+    uint32_t typeCodeNetworkOrder = htonl(_typeCode);
+    crcBuffer.insert(crcBuffer.end(),
+                     reinterpret_cast<unsigned char*>(&typeCodeNetworkOrder),
+                     reinterpret_cast<unsigned char*>(&typeCodeNetworkOrder) + sizeof(typeCodeNetworkOrder));
+    
+    // Append the data bytes to the crcBuffer
+    crcBuffer.insert(crcBuffer.end(),
+                     reinterpret_cast<unsigned char*>(_data.data()),
+                     reinterpret_cast<unsigned char*>(_data.data()) + _data.size());
+
+    // Calculate the CRC over the combined typeCode and data
+    unsigned long generatedCRC = _crcGen.crc(crcBuffer.data(), crcBuffer.size());
+
+    std::cout << std::hex << "generatedCRC: " << generatedCRC << std::endl;    
+    std::cout << std::hex << "original CRC: " << crc << std::endl;
+
+    // Compare calculated CRC with the given CRC
+    if (generatedCRC != crc)
+    {
+        return false; // Return false if the CRCs don't match
+    }
+
+    _crc = crc;
+    return true;
+}
+
 
 bool
 PNGChunk::isValid() const
