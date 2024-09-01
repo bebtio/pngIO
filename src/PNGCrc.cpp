@@ -1,4 +1,4 @@
-#include "PNGCRC.hpp"
+#include "PNGCrc.hpp"
 
 /// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PNGCRC.hpp"
+#include "PNGCrc.hpp"
 
 #include <cstdint>
 #include <vector>

@@ -25,6 +25,14 @@ when changes to the tests have been made without changes being made to the libra
 - Class or struct for each PNG Chunk type
 - Tests, many tests.
   
+## [0.5.0] - 2024-09-01
+
+### Added
+
+- CRC genration code straight from: [libpng](http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html)
+  - Wrapped it up in a class called PNGCrc.
+- More error checking for cases where the CRC is invalid.
+
 ## [0.4.0] - 2024-08-29
 
 ### Added

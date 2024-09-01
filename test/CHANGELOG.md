@@ -19,6 +19,14 @@ of semantic versioning. So scheme is MAJOR.MINOR.PATCH+TEST_VERSION.
 
 ## [Unreleased]
 
+## [0.5.0] - 2024-09-01
+
+### Added
+
+- Tests to check whether the CRC generation code is working.
+  - GoodCRCTest
+  - BadCRCTest
+
 ## [0.4.0] - 2024-08-29
 
 ### Added
