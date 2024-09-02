@@ -44,7 +44,7 @@ when changes to the tests have been made without changes being made to the libra
 
 ### Added
 
-- PNGChunk classes that represent each of the PNGTypes defined here: [libpngchunks](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
+- PNGChunk class declarations that represent each of the PNGTypes defined here: [libpngchunks](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
 
 ## [0.5.0] - 2024-09-01
 
