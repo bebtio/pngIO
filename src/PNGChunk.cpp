@@ -158,7 +158,8 @@ PNGChunk readPNGChunk(const std::string &filename, size_t offset)
 /// \name writePNGChunk
 ///
 /// \brief Writes a png chunk, appending it to the end of the file designated by
-///        filename.
+///        filename. This function assumes that the CRC has already been set via
+///        the PNGChunk::setCRC() function or some other means.
 ///
 /// \param[in] chunk    - The chunk to write.
 /// \param[in] filename - The filename to write the chunk to.
