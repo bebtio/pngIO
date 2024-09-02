@@ -63,7 +63,7 @@ PNGFile::write( const std::string &filename )
         for( PNGChunk &chunk : _chunks )
         {
             // Re-generate the CRC in case the data has been modified.
-            chunk.setCRC(chunk.generateCRC());
+            chunk.setCRC();
             if( !writePNGChunk( chunk, filename ) )
             {
                 fileWritten = false;
