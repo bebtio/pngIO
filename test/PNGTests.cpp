@@ -1,5 +1,6 @@
 #include "PNGTests.hpp"
 
+#include <cstdint>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -9,7 +10,6 @@
 
 #include "PNGFile.hpp"
 #include "PNGChunk.hpp"
-#include "PNGIOTypes.hpp"
 
 // *************************************************** //
 // Test name: PNGTests.ReadValidSignatureTest
@@ -324,9 +324,37 @@ TEST_F( PNGTests, WritePNGToFileTest )
     }
 }
 
-TEST_F( PNGTests, CRCTest )
+// *************************************************** //
+// Test name: PNGTests.GoodCRCTest
+// Compares the known CRC of a pngChunk to the CRC that is read in.
+// If the pngChunk's CRC matches the expected CRC the test passes.
+// *************************************************** //
+TEST_F( PNGTests, GoodCRCTest )
 {
-    FAIL();
+    PNGChunk chunk = readPNGChunk(getTestImagePath(), 8);
+    uint32_t expectedCRC(38820074);
+    uint32_t actualCRC( chunk.getCRC() );
+    
+    ASSERT_EQ( expectedCRC, actualCRC );
+    ASSERT_EQ( expectedCRC, chunk.generateCRC() );
+}
+
+// *************************************************** //
+// Test name: PNGTests.BadCRCTest
+// Compares the generatedCRC to a file that contains a
+// hardcoded bogus CRC.
+// If the originalCRC doesn't match the generatedCRC
+// the test passes.
+// *************************************************** //
+TEST_F( PNGTests, BadCRCTest )
+{
+    PNGChunk chunk = readPNGChunk(getInputDir(), 0);    
+
+    uint32_t originalCRC( chunk.getCRC() );
+    uint32_t generatedCRC( chunk.generateCRC() );
+
+    ASSERT_NE( originalCRC, generatedCRC );
+
 }
 
 

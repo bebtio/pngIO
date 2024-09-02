@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PNGCrc.hpp"
+
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -20,6 +22,7 @@ public:
     , _typeCode(0)
     , _data{0}
     , _crc(0)
+    , _crcGen()
     {}
 
     void clear();
@@ -29,11 +32,13 @@ public:
     const std::vector<std::byte>& getData()                const { return(_data);              }
     uint32_t                      getCRC()                 const { return(_crc);               }
 
-    void setLength  ( uint32_t length )                    { this->_length   = length;   }
-    void setTypeCode( uint32_t typeCode )                  { this->_typeCode = typeCode; }
-    void setData    ( const std::vector<std::byte> &data ) { this->_data     = data;     }
-    void setCRC     ( uint32_t crc )                       { this->_crc      = crc;      }
+    void setLength  ( uint32_t length )                    { this->_length   = length;         }
+    void setTypeCode( uint32_t typeCode )                  { this->_typeCode = typeCode;       }
+    void setData    ( const std::vector<std::byte> &data ) { this->_data     = data;           }
+    void setCRC     ( uint32_t crc )                       { this->_crc      = crc;            }
+    void setCRC()                                          { this->_crc      = generateCRC();  }
 
+    uint32_t generateCRC(); 
     size_t getSizeInBytes() const;
 
     bool isValid() const;
@@ -45,6 +50,8 @@ private:
     uint32_t               _typeCode;
     std::vector<std::byte> _data;
     uint32_t               _crc;
+
+    PNGCrc _crcGen;
 
 };
 
