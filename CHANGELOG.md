@@ -39,6 +39,8 @@ when changes to the tests have been made without changes being made to the libra
   - iTXt
   - tEXt
 - Tests, many tests.
+- Add chunk ordering code to PNGFile following order rules here: [libpngchunks](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
+  - This is meant to order the chunk vector.  
   
 ## [0.6.0] - 2024-09-02
 
