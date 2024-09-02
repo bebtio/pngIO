@@ -18,11 +18,11 @@ PNGCrc::PNGCrc():
 /// **************************************************************** //
 void PNGCrc::make_crc_table(void)
 {
-    unsigned long c;
+    uint32_t c;
 
     for( int n = 0; n < 256; n++)
     {
-        c = (unsigned long) n;
+        c = (uint32_t) n;
         for(int k = 0; k < 8; k++)
         {
             if (c & 1)
@@ -44,10 +44,10 @@ void PNGCrc::make_crc_table(void)
 /// crc() routine below)).
 /// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
 /// **************************************************************** //
-unsigned long 
-PNGCrc::update_crc(unsigned long crc, unsigned char *buf, int len)
+uint32_t 
+PNGCrc::update_crc(uint32_t crc, unsigned char *buf, int len)
 {
-    unsigned long c = crc;
+    uint32_t c = crc;
     int n;
 
     if (!_crc_table_computed)
@@ -67,7 +67,7 @@ PNGCrc::update_crc(unsigned long crc, unsigned char *buf, int len)
 /// Return the CRC of the bytes buf[0..len-1].
 /// PNG source code was copied from: http://www.libpng.org/pub/png/spec/1.2/PNG-CRCAppendix.html
 /// **************************************************************** //
-unsigned long 
+uint32_t 
 PNGCrc::crc(unsigned char *buf, int len)
 {
     return update_crc(0xffffffffL, buf, len) ^ 0xffffffffL;

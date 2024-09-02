@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 class PNGCrc
 {
 
@@ -8,21 +9,14 @@ public:
     PNGCrc();
     ~PNGCrc() {}
 
-    unsigned long crc(unsigned char *buf, int len);
-    void reset()
-    {
-        _crc_table_computed = 0;
-        for(int i = 0; i < 256; i++)
-        {
-            _crc_table[i] = 0;
-        }
-    }
+    uint32_t crc(unsigned char *buf, int len);
+
 private:
 
-    unsigned long _crc_table[256];
+    uint32_t _crc_table[256];
     int _crc_table_computed;
    
     void make_crc_table(void);
-    unsigned long update_crc(unsigned long crc, unsigned char *buf, int len);
+    uint32_t update_crc(uint32_t crc, unsigned char *buf, int len);
 
 };

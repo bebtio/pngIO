@@ -71,6 +71,7 @@ bool writePNGSignature( const std::string &filename )
 }
 
 /// ************************************************************************** ///
+/// \name readPNGChunk
 /// \brief Reads a png file's chunk data at location offset.
 ///        Returns the number of bytes 
 /// Because PNG's are stored in network byte order, we should call ntoh[ls]
@@ -153,6 +154,17 @@ PNGChunk readPNGChunk(const std::string &filename, size_t offset)
 }
 
 
+/// ************************************************************************** ///
+/// \name writePNGChunk
+///
+/// \brief Writes a png chunk, appending it to the end of the file designated by
+///        filename.
+///
+/// \param[in] chunk    - The chunk to write.
+/// \param[in] filename - The filename to write the chunk to.
+///
+/// \return bool - true if successful, false if unsuccessful write.
+/// ************************************************************************** ///
 bool
 writePNGChunk( const PNGChunk &chunk, const std::string &filename )
 {
@@ -165,14 +177,24 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
     std::vector<std::byte> data = chunk.getData();
     uint32_t crc                = htonl(chunk.getCRC()); // Convert to network byte order
 
-    if( chunkFile )
+    if( chunkFile.is_open() )
     {
-        chunkFile.write(reinterpret_cast<char*>(&length),     sizeof(length));
-        chunkFile.write(reinterpret_cast<char*>(&typeCode),   sizeof(typeCode));
-        chunkFile.write(reinterpret_cast<char*>(data.data()), data.size());
-        chunkFile.write(reinterpret_cast<char*>(&crc),        sizeof(crc));
-
-        writeSuccess = true;
+        if( chunk.isValid() )
+        {
+            chunkFile.write(reinterpret_cast<char*>(&length),     sizeof(length));
+            chunkFile.write(reinterpret_cast<char*>(&typeCode),   sizeof(typeCode));
+            chunkFile.write(reinterpret_cast<char*>(data.data()), data.size());
+            chunkFile.write(reinterpret_cast<char*>(&crc),        sizeof(crc));
+            writeSuccess = true;
+        }
+        else
+        {
+            std::cerr << __FILE__ << ":" << __LINE__ << ": Chunk has invalid typeCode: " << std::hex << "0x" << typeCode << std::endl;
+        }
+    }
+    else
+    {
+        std::cerr << __FILE__ << ":"<< __LINE__ << ": Unable to open file: " << filename << std::endl;
     }
 
     chunkFile.close();
@@ -180,6 +202,13 @@ writePNGChunk( const PNGChunk &chunk, const std::string &filename )
     return(writeSuccess);
 }
 
+/// ************************************************************************** ///
+/// \name getSizeInBytes
+///
+/// \brief Returns the number size in bytes that the PNGChunk takes up.
+///
+/// \return size_t - the size of the chunk in bytes.
+/// ************************************************************************** ///
 size_t
 PNGChunk::getSizeInBytes() const
 {
@@ -192,10 +221,17 @@ PNGChunk::getSizeInBytes() const
     return(chunkSize);
 }
 
+/// ************************************************************************** ///
+/// \name genreateCRC
+///
+/// \brief Generates the CRC on an array of data containing the PNGChunk's _typeCode
+///        folowed by the _data member data.
+///
+/// \return uint32_t - unsigned 32 bit integer containing the CRC.
+/// ************************************************************************** ///
 uint32_t
 PNGChunk::generateCRC()
 {
-    _crcGen.reset();
     // Combine typeCode and data into a single buffer for CRC calculation
     std::vector<unsigned char> crcBuffer;
     
@@ -217,6 +253,15 @@ PNGChunk::generateCRC()
 }
 
 
+/// ************************************************************************** ///
+/// \name isValid
+///
+/// \brief Checks that a PNGChunk is valid based only on whether the typeCode is
+///        a valid one defined in the PNG specification.
+///        [libpng](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
+///
+/// \return bool - true if typeCode is defined, false otherwise.
+/// ************************************************************************** ///
 bool
 PNGChunk::isValid() const
 {
@@ -242,13 +287,21 @@ PNGChunk::isValid() const
         case static_cast<uint32_t>(pngIO::TypeCodes::iTXt):
         case static_cast<uint32_t>(pngIO::TypeCodes::tEXt):
         case static_cast<uint32_t>(pngIO::TypeCodes::zTXt):
-            return true;
+            return(true);
         default:
-            return false;
+            return(false);
     }
-    return(isValid);
+     
+    return(false);
 }
 
+/// ************************************************************************** ///
+/// \name toString
+///
+/// \brief Turns each member variable into a printable string and returns that.
+///
+/// \return string containing the member variables.
+/// ************************************************************************** ///
 std::string PNGChunk::toString() const
 {
     std::stringstream ss;
