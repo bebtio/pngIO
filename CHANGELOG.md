@@ -20,11 +20,32 @@ when changes to the tests have been made without changes being made to the libra
 
 ## [Unreleased]
 
-- CRC check for PNGReader
-  - CRC generator for writes
-- Class or struct for each PNG Chunk type
+- Class or struct implementation for each PNG Chunk type
+  - IHDR
+  - PLTE
+  - IDAT
+  - IEND
+  - cHRM
+  - gAMA
+  - iCCP
+  - sBIT
+  - sRGB
+  - bKGD
+  - hIST
+  - tRNS
+  - pHYs
+  - sPLT
+  - tIME
+  - iTXt
+  - tEXt
 - Tests, many tests.
   
+## [0.6.0] - 2024-09-02
+
+### Added
+
+- PNGChunk classes that represent each of the PNGTypes defined here: [libpngchunks](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
+
 ## [0.5.0] - 2024-09-01
 
 ### Added
