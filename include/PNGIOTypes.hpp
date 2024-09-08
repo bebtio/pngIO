@@ -30,20 +30,22 @@ namespace pngIO
         tIME = 0x74494d45, // Image last modification time.
         iTXt = 0x69545874, // International textual data.
         tEXt = 0x74455874, // Textual data.
-        zTXt = 0x7a545874  // Compressed textual data.
+        zTXt = 0x7a545874, // Compressed textual data.
+        INVALID = 0x0
     };
 
 
     class PNGChunkInterface
     {
     public:
+
         virtual ~PNGChunkInterface() = default;
         virtual bool readFromRawPNGChunk( const PNGChunk &chunk ) = 0;
         virtual bool writeRawPNGChunk   ( PNGChunk &chunk )       = 0;
 
     protected:
-        uint32_t _typeCode;
-        uint32_t _length;
+        TypeCodes _typeCode;
+        uint32_t  _length;
     };
 
     // PNG Structs follow. There is one for each TypeCode.
@@ -51,8 +53,11 @@ namespace pngIO
     class IHDRChunk : public PNGChunkInterface
     {
     public:
+        IHDRChunk();
+        ~IHDRChunk() {}
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
 
     private:
         uint32_t _width;
@@ -69,6 +74,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class IDATChunk : public PNGChunkInterface
@@ -76,6 +82,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class IENDChunk : public PNGChunkInterface
@@ -83,6 +90,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class cHRMChunk: public PNGChunkInterface
@@ -90,6 +98,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class gAMAChunk: public PNGChunkInterface
@@ -97,6 +106,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class iCCPChunk: public PNGChunkInterface
@@ -104,6 +114,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class sBITChunk: public PNGChunkInterface
@@ -111,6 +122,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class sRGBChunk: public PNGChunkInterface
@@ -118,6 +130,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class bKGDChunk: public PNGChunkInterface
@@ -125,6 +138,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class hISTChunk: public PNGChunkInterface
@@ -132,6 +146,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class tRNSChunk: public PNGChunkInterface
@@ -139,6 +154,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class pHYsChunk: public PNGChunkInterface
@@ -146,6 +162,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class sPLTChunk: public PNGChunkInterface
@@ -153,6 +170,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class tIMEChunk: public PNGChunkInterface
@@ -160,6 +178,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class iTXtChunk: public PNGChunkInterface
@@ -167,6 +186,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class tEXtChunk: public PNGChunkInterface
@@ -174,6 +194,7 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 
     class zTXtChunk: public PNGChunkInterface
@@ -181,5 +202,6 @@ namespace pngIO
     public:
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
     };
 }
