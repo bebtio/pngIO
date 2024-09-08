@@ -30,7 +30,7 @@ jobs:
 
       # Install Conan dependencies
       - name: Conan Install
-        run: conan install . -if build
+        run: conan install . -of build
 
       # Run the Conan build command
       - name: Conan Build
