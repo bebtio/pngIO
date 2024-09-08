@@ -351,7 +351,6 @@ TEST_F( PNGTests, BadCRCTest )
     PNGChunk chunk = readPNGChunk(getInputDir() / "badCRC.txt", 0);    
 
     ASSERT_FALSE( chunk.isValid() );
-
 }
 
 
