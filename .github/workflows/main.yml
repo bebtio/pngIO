@@ -28,6 +28,10 @@ jobs:
       - name: Create build directory
         run: mkdir build
 
+      # Create conan profile
+      - name: Conan Create Profile
+        run: conan profile detect --force
+        
       # Install Conan dependencies
       - name: Conan Install
         run: conan install . -of build
