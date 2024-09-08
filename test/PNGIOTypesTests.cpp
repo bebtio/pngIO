@@ -11,7 +11,50 @@ TEST_F( PNGIOTypesTests, IHDRChunkReadTest )
     pngIO::IHDRChunk ihdrChunk;
     ihdrChunk.readFromRawPNGChunk(chunk);
 
-    FAIL();
+    ASSERT_EQ( ihdrChunk.getTypeCode(),          pngIO::TypeCodes::IHDR );
+    ASSERT_EQ( ihdrChunk.getLength(),            13                     );
+    ASSERT_EQ( ihdrChunk.getWidth(),             10                     );
+    ASSERT_EQ( ihdrChunk.getHeight(),            10                     );
+    ASSERT_EQ( ihdrChunk.getBitDepth(),          8                      );
+    ASSERT_EQ( ihdrChunk.getColorType(),         2                      );
+    ASSERT_EQ( ihdrChunk.getCompressionMethod(), 0                      );
+    ASSERT_EQ( ihdrChunk.getFilterMethod(),      0                      );
+    ASSERT_EQ( ihdrChunk.getInterlaceMethod(),   0                      );
+}
+
+TEST_F( PNGIOTypesTests, IHDRChunkWriteTest )
+{
+    pngIO::IHDRChunk originalIHDRChunk;
+    pngIO::IHDRChunk newIHDRChunk;
+    PNGChunk chunk;
+
+    // Create a IHDRChunk with some.
+    originalIHDRChunk.setTypeCode( pngIO::TypeCodes::IHDR );
+    originalIHDRChunk.setLength( 13 );
+    originalIHDRChunk.setWidth( 100 );
+    originalIHDRChunk.setWidth( 150 );
+    originalIHDRChunk.setBitDepth( 8 );
+    originalIHDRChunk.setColorType( 2 );
+    originalIHDRChunk.setCompressionMethod( 0 );
+    originalIHDRChunk.setFilterMethod( 0 );
+    originalIHDRChunk.setInterlaceMethod( 0 );
+
+    // Create a raw chunk with this data in it.
+    originalIHDRChunk.writeRawPNGChunk(chunk);
+
+    // Create a new IHDRChunk using the raw chunk as input
+    newIHDRChunk.readFromRawPNGChunk( chunk );
+    
+    // Compare the original to the newly created IHDRChunk and esure they are the same.
+    ASSERT_EQ( originalIHDRChunk.getTypeCode(),          newIHDRChunk.getTypeCode()          );
+    ASSERT_EQ( originalIHDRChunk.getLength(),            newIHDRChunk.getLength()            );
+    ASSERT_EQ( originalIHDRChunk.getWidth(),             newIHDRChunk.getWidth()             );
+    ASSERT_EQ( originalIHDRChunk.getHeight(),            newIHDRChunk.getHeight()            );
+    ASSERT_EQ( originalIHDRChunk.getBitDepth(),          newIHDRChunk.getBitDepth()          );
+    ASSERT_EQ( originalIHDRChunk.getColorType(),         newIHDRChunk.getColorType()         );
+    ASSERT_EQ( originalIHDRChunk.getCompressionMethod(), newIHDRChunk.getCompressionMethod() );
+    ASSERT_EQ( originalIHDRChunk.getFilterMethod(),      newIHDRChunk.getFilterMethod()      );
+    ASSERT_EQ( originalIHDRChunk.getInterlaceMethod(),   newIHDRChunk.getInterlaceMethod()   );
 }
 
 // *************************************************** //

@@ -1,3 +1,4 @@
+#include "pngUtils.hpp"
 #include "PNGIOTypes.hpp"
 #include "PNGChunk.hpp"
 #include <cstdint>
@@ -63,7 +64,25 @@ pngIO::IHDRChunk::readFromRawPNGChunk( const PNGChunk &chunk )
 bool
 pngIO::IHDRChunk::writeRawPNGChunk( PNGChunk &chunk )
 {
-    bool succeded(false);
 
-    return(succeded);
+    std::vector<std::byte> data;
+    chunk.setTypeCode( static_cast<uint32_t>( this->_typeCode ) );
+
+    // IHDR chunks are always of length 13.
+    chunk.setLength( 13 );
+
+    // These need to be in network byte order.
+    pngIO::appendToBuffer( data, htonl(this->getWidth())  ); 
+    pngIO::appendToBuffer( data, ntohl(this->getHeight()) );
+
+    pngIO::appendToBuffer( data, this->getBitDepth() );
+    pngIO::appendToBuffer( data, this->getColorType() );
+    pngIO::appendToBuffer( data, this->getCompressionMethod() );
+    pngIO::appendToBuffer( data, this->getFilterMethod() );
+    pngIO::appendToBuffer( data, this->getInterlaceMethod() );
+
+    chunk.setData(data);
+    chunk.setCRC();
+
+    return(true);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include "PNGChunk.hpp"
 
 namespace pngIO
@@ -43,6 +44,12 @@ namespace pngIO
         virtual bool readFromRawPNGChunk( const PNGChunk &chunk ) = 0;
         virtual bool writeRawPNGChunk   ( PNGChunk &chunk )       = 0;
 
+        TypeCodes getTypeCode() { return(_typeCode); }
+        uint32_t  getLength()   { return (_length);  }
+
+        void setTypeCode( pngIO::TypeCodes typeCode ) { _typeCode = typeCode; }
+        void setLength( uint32_t length)              { _length   = length;   }
+
     protected:
         TypeCodes _typeCode;
         uint32_t  _length;
@@ -58,6 +65,24 @@ namespace pngIO
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
 		void clear();
+
+        // Getters
+        uint32_t getWidth()             const                { return _width;             }
+        uint32_t getHeight()            const                { return _height;            }
+        uint8_t  getBitDepth()          const                { return _bitDepth;          }
+        uint8_t  getColorType()         const                { return _colorType;         }
+        uint8_t  getCompressionMethod() const                { return _compressionMethod; }
+        uint8_t  getFilterMethod()      const                { return _filterMethod;      }
+        uint8_t  getInterlaceMethod()   const                { return _interlaceMethod;   }
+
+        // Setters
+        void setWidth(uint32_t width)                        { _width             = width;             }
+        void setHeight(uint32_t height)                      { _height            = height;            }
+        void setBitDepth(uint8_t bitDepth)                   { _bitDepth          = bitDepth;          }
+        void setColorType(uint8_t colorType)                 { _colorType         = colorType;         }
+        void setCompressionMethod(uint8_t compressionMethod) { _compressionMethod = compressionMethod; }
+        void setFilterMethod(uint8_t filterMethod)           { _filterMethod      = filterMethod;      }
+        void setInterlaceMethod(uint8_t interlaceMethod)     { _interlaceMethod   = interlaceMethod;   }
 
     private:
         uint32_t _width;
