@@ -20,8 +20,8 @@ when changes to the tests have been made without changes being made to the libra
 
 ## [Unreleased]
 
+- Break apart each of the Chunk type implementations into their own file.
 - Class or struct implementation for each PNG Chunk type
-  - IHDR
   - PLTE
   - IDAT
   - IEND
@@ -42,6 +42,11 @@ when changes to the tests have been made without changes being made to the libra
 - Add chunk ordering code to PNGFile following order rules here: [libpngchunks](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
   - This is meant to order the chunk vector.  
   
+## [0.7.0] - 2024-09-08
+
+### Added
+
+- Added IHDRChunk implementation as well as read and write operations for it.
 ## [0.6.0] - 2024-09-02
 
 ### Added

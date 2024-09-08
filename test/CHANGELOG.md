@@ -19,6 +19,12 @@ of semantic versioning. So scheme is MAJOR.MINOR.PATCH+TEST_VERSION.
 
 ## [Unreleased]
 
+## [0.7.0] - 2024-09-08
+
+### Added
+
+- Tests for IHDRChunk read and write operations in the PNGIOTypeTests file.
+
 ## [0.5.0] - 2024-09-01
 
 ### Added
