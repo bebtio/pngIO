@@ -3,7 +3,15 @@
 #include "PNGIOTypes.hpp"
 #include "PNGChunk.hpp"
 
-
+// *************************************************** //
+// Test name: PNGIOTypesTests.IHDRChunkReadTest
+// Reads in a IHDR chunk from the testImage.png
+// and constructs a IHDRChunk from it.
+//
+// We then compare the known values of that chunk to 
+// what was read in. If any of the IHDR elements do not match
+// what is expected, the test fails.
+// *************************************************** //
 TEST_F( PNGIOTypesTests, IHDRChunkReadTest )
 {
     PNGChunk chunk = readPNGChunk(getTestImagePath(), 8);
@@ -22,6 +30,22 @@ TEST_F( PNGIOTypesTests, IHDRChunkReadTest )
     ASSERT_EQ( ihdrChunk.getInterlaceMethod(),   0                      );
 }
 
+// *************************************************** //
+// Test name: PNGIOTypesTests.IHDRChunkWriteTest
+//
+// This tests the ability for IHDRChunk to write a
+// a PNGChunk with the correct values.
+//
+// We create a IHDRChunk custom values.
+// We then write that IHDRChunk to a PNGChunk object.
+// We then take the PNGChunk object and construct the
+// newIHDRChunk from that.
+//
+// Finally we take our originalIHDRChunk and compare the 
+// elements to the newIHDRChunk.
+//
+// If the elements are all equal then the test passes.
+// *************************************************** //
 TEST_F( PNGIOTypesTests, IHDRChunkWriteTest )
 {
     pngIO::IHDRChunk originalIHDRChunk;
@@ -40,10 +64,10 @@ TEST_F( PNGIOTypesTests, IHDRChunkWriteTest )
     originalIHDRChunk.setInterlaceMethod( 0 );
 
     // Create a raw chunk with this data in it.
-    originalIHDRChunk.writeRawPNGChunk(chunk);
+    ASSERT_TRUE( originalIHDRChunk.writeRawPNGChunk(chunk) );
 
     // Create a new IHDRChunk using the raw chunk as input
-    newIHDRChunk.readFromRawPNGChunk( chunk );
+    ASSERT_TRUE( newIHDRChunk.readFromRawPNGChunk( chunk ) );
     
     // Compare the original to the newly created IHDRChunk and esure they are the same.
     ASSERT_EQ( originalIHDRChunk.getTypeCode(),          newIHDRChunk.getTypeCode()          );
