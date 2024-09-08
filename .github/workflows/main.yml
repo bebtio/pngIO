@@ -34,7 +34,7 @@ jobs:
         
       # Install Conan dependencies
       - name: Conan Install
-        run: conan install . -of build
+        run: conan install . -of build --build=missing
 
       # Run the Conan build command
       - name: Conan Build
