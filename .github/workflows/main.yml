@@ -1,0 +1,37 @@
+name: Conan Build on Commit
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install Conan
+      - name: Install Conan
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install conan
+
+      # Create the build directory
+      - name: Create build directory
+        run: mkdir build
+
+      # Install Conan dependencies
+      - name: Conan Install
+        run: conan install . -if=build
+
+      # Run the Conan build command
+      - name: Conan Build
+        run: conan build -of=build .
