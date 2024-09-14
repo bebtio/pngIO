@@ -11,10 +11,17 @@ public:
     PNGImage( const std::string &filename );
     ~PNGImage() {}
 
+
+    // I might end up moving all this stuff below here to PNGFile. That sort
+    // of makes more sense.
+    // I think all this file should have a is a vector of "pixel" data
+    // with stuff from the image header.
+    //
     // Getters and setters incoming.
     // There are 17 chunk types. So 17 getters and 17 setters.
 
     // Getters
+    pngIO::IHDRChunk getIHDRChunk() const { return _IHDRChunk; }
     pngIO::PLTEChunk getPLTEChunk() const { return _PLTEChunk; }
     pngIO::IDATChunk getIDATChunk() const { return _IDATChunk; }
     pngIO::IENDChunk getIENDChunk() const { return _IENDChunk; }
@@ -34,6 +41,7 @@ public:
     pngIO::zTXtChunk getzTXtChunk() const { return _ztxtChunk; }
 
     // Setters
+    void setIHDRChunk(const pngIO::IHDRChunk& chunk) { _IHDRChunk = chunk; }
     void setPLTEChunk(const pngIO::PLTEChunk& chunk) { _PLTEChunk = chunk; }
     void setIDATChunk(const pngIO::IDATChunk& chunk) { _IDATChunk = chunk; }
     void setIENDChunk(const pngIO::IENDChunk& chunk) { _IENDChunk = chunk; }
@@ -54,21 +62,5 @@ public:
 
 private:
 
-    pngIO::PLTEChunk _PLTEChunk;
-    pngIO::IDATChunk _IDATChunk;
-    pngIO::IENDChunk _IENDChunk;
-    pngIO::cHRMChunk _cHRMChunk;
-    pngIO::gAMAChunk _gAMAChunk;
-    pngIO::iCCPChunk _iCCPChunk;
-    pngIO::sBITChunk _sBITChunk;
-    pngIO::sRGBChunk _sRGBChunk;
-    pngIO::bKGDChunk _nKGDChunk;
-    pngIO::hISTChunk _hISTChunk;
-    pngIO::tRNSChunk _tRNSChunk;
-    pngIO::pHYsChunk _pHYsChunk;
-    pngIO::sPLTChunk _sPLTChunk;
-    pngIO::tIMEChunk _tIMEChunk;
-    pngIO::iTXtChunk _iTXtChunk;
-    pngIO::tEXtChunk _tEXtChunk;
-    pngIO::zTXtChunk _ztxtChunk;
+    PNGFile _pngFile;
 };
