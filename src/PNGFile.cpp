@@ -1,6 +1,8 @@
 #include "PNGFile.hpp"
 #include "PNGChunk.hpp"
 #include "PNGIOTypes.hpp"
+#include <cstdint>
+#include <optional>
 
 /// ********************************************************** ///
 /// \name load
@@ -78,4 +80,39 @@ PNGFile::write( const std::string &filename )
 void PNGFile::clear()
 {
     _chunks.clear();
+}
+
+std::optional<PNGChunk>
+PNGFile::getPNGChunk( pngIO::TypeCodes type )
+{
+    for( const PNGChunk &chunk : this->_chunks )
+    {
+        if( chunk.getTypeCode() == static_cast<uint32_t>(type) )
+        {
+            return( std::optional(chunk) );
+        }
+    }
+
+    return( std::nullopt );
+}
+
+bool
+PNGFile::setPNGChunk( const PNGChunk &chunk )
+{
+    if( !chunk.isValid() )
+    {
+        return( false );
+    }
+
+    for( PNGChunk &chunkRef: this->_chunks )
+    {
+        if( chunk.getTypeCode() == chunkRef.getTypeCode() )
+        {
+            chunkRef = chunk;
+            return(true);
+        }
+    }
+
+    this->_chunks.push_back(chunk);
+    return(true);
 }
