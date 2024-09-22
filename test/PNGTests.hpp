@@ -9,7 +9,19 @@ class PNGTests : public testing::Test
 {
 
 public:
-    void SetUp();
+    void SetUp()
+    {
+        _testImagePath = std::filesystem::path(INPUT_DIR) / "testImage.png";
+        _inputDir      = INPUT_DIR;
+        _outputDir     = OUTPUT_DIR;
+
+        // Create the output directory if it does not exist yet.
+        if( !std::filesystem::exists(_outputDir) )
+        {
+            std::filesystem::create_directories(_outputDir);
+        }
+    }
+
     void TearDown() {};
 
     std::filesystem::path getTestImagePath() { return( _testImagePath ); }
