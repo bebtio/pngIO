@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include "PNGChunk.hpp"
 
 namespace pngIO
@@ -30,20 +31,28 @@ namespace pngIO
         tIME = 0x74494d45, // Image last modification time.
         iTXt = 0x69545874, // International textual data.
         tEXt = 0x74455874, // Textual data.
-        zTXt = 0x7a545874  // Compressed textual data.
+        zTXt = 0x7a545874, // Compressed textual data.
+        INVALID = 0x0
     };
 
 
     class PNGChunkInterface
     {
     public:
+
         virtual ~PNGChunkInterface() = default;
         virtual bool readFromRawPNGChunk( const PNGChunk &chunk ) = 0;
         virtual bool writeRawPNGChunk   ( PNGChunk &chunk )       = 0;
 
+        TypeCodes getTypeCode() { return(_typeCode); }
+        uint32_t  getLength()   { return (_length);  }
+
+        void setTypeCode( pngIO::TypeCodes typeCode ) { _typeCode = typeCode; }
+        void setLength( uint32_t length)              { _length   = length;   }
+
     protected:
-        uint32_t _typeCode;
-        uint32_t _length;
+        TypeCodes _typeCode;
+        uint32_t  _length;
     };
 
     // PNG Structs follow. There is one for each TypeCode.
@@ -51,8 +60,29 @@ namespace pngIO
     class IHDRChunk : public PNGChunkInterface
     {
     public:
+        IHDRChunk();
+        ~IHDRChunk() {}
         bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
         bool writeRawPNGChunk( PNGChunk &chunk ) override;
+		void clear();
+
+        // Getters
+        uint32_t getWidth()             const                { return _width;             }
+        uint32_t getHeight()            const                { return _height;            }
+        uint8_t  getBitDepth()          const                { return _bitDepth;          }
+        uint8_t  getColorType()         const                { return _colorType;         }
+        uint8_t  getCompressionMethod() const                { return _compressionMethod; }
+        uint8_t  getFilterMethod()      const                { return _filterMethod;      }
+        uint8_t  getInterlaceMethod()   const                { return _interlaceMethod;   }
+
+        // Setters
+        void setWidth(uint32_t width)                        { _width             = width;             }
+        void setHeight(uint32_t height)                      { _height            = height;            }
+        void setBitDepth(uint8_t bitDepth)                   { _bitDepth          = bitDepth;          }
+        void setColorType(uint8_t colorType)                 { _colorType         = colorType;         }
+        void setCompressionMethod(uint8_t compressionMethod) { _compressionMethod = compressionMethod; }
+        void setFilterMethod(uint8_t filterMethod)           { _filterMethod      = filterMethod;      }
+        void setInterlaceMethod(uint8_t interlaceMethod)     { _interlaceMethod   = interlaceMethod;   }
 
     private:
         uint32_t _width;
@@ -64,122 +94,4 @@ namespace pngIO
         uint8_t  _interlaceMethod;
     };
 
-    class PLTEChunk : public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class IDATChunk : public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class IENDChunk : public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class cHRMChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class gAMAChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class iCCPChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class sBITChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class sRGBChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class bKGDChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class hISTChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class tRNSChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class pHYsChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class sPLTChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class tIMEChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class iTXtChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class tEXtChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
-
-    class zTXtChunk: public PNGChunkInterface
-    {
-    public:
-        bool readFromRawPNGChunk( const PNGChunk &chunk ) override;
-        bool writeRawPNGChunk( PNGChunk &chunk ) override;
-    };
 }

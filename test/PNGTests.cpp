@@ -348,13 +348,9 @@ TEST_F( PNGTests, GoodCRCTest )
 // *************************************************** //
 TEST_F( PNGTests, BadCRCTest )
 {
-    PNGChunk chunk = readPNGChunk(getInputDir(), 0);    
+    PNGChunk chunk = readPNGChunk(getInputDir() / "badCRC.txt", 0);    
 
-    uint32_t originalCRC( chunk.getCRC() );
-    uint32_t generatedCRC( chunk.generateCRC() );
-
-    ASSERT_NE( originalCRC, generatedCRC );
-
+    ASSERT_FALSE( chunk.isValid() );
 }
 
 

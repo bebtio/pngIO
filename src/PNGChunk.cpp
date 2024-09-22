@@ -89,8 +89,9 @@ PNGChunk readPNGChunk(const std::string &filename, size_t offset)
 
     // Open the file for reading.
     std::ifstream pngFile(filename, std::ios::binary);
-    if( !pngFile.good() )
+    if( !pngFile.is_open() )
     {
+        std::cerr << __FILE__ << ":" << __LINE__ << ": " << "Error: could not open file: " << filename << " for reading." << std::endl;
         return chunk; // Return an empty chunk on failure
     }
 
@@ -114,7 +115,7 @@ PNGChunk readPNGChunk(const std::string &filename, size_t offset)
     // Read the typeCode
     if( !pngFile.read(reinterpret_cast<char*>(&typeCode), sizeof(typeCode)) )
     {
-        return chunk; // Return an empty chunk on read failure
+        return PNGChunk(); // Return an empty chunk on read failure
     }
     typeCode = ntohl(typeCode);
     chunk.setTypeCode(typeCode);
@@ -122,22 +123,22 @@ PNGChunk readPNGChunk(const std::string &filename, size_t offset)
     // Check if the chunk is valid
     if( !chunk.isValid() )
     {
-        std::cerr << "Invalid type code of: 0x" << std::hex << typeCode << std::endl;
-        return chunk; // Return an empty chunk if the type code is invalid
+        std::cerr << __FILE__ << ":" << __LINE__ << ":Invalid type code of: 0x" << std::hex << typeCode << std::endl;
+        return PNGChunk(); // Return an empty chunk if the type code is invalid
     }
 
     // Resize the data vector and read the data
     data.resize(length);
     if( !pngFile.read(reinterpret_cast<char*>(data.data()), length) )
     {
-        return chunk; // Return an empty chunk on read failure
+        return PNGChunk(); // Return an empty chunk on read failure
     }
     chunk.setData(data);
 
     // Read the CRC
     if( !pngFile.read(reinterpret_cast<char*>(&crc), sizeof(crc)) )
     {
-        return chunk; // Return an empty chunk on read failure
+        return PNGChunk(); // Return an empty chunk on read failure
     }
     crc = ntohl(crc);
 
@@ -145,7 +146,7 @@ PNGChunk readPNGChunk(const std::string &filename, size_t offset)
     generatedCRC = chunk.generateCRC();
     if( generatedCRC != crc )
     {
-        std::cerr << "CRC mismatch! Expected: 0x" << std::hex << crc << ", but got: 0x" << generatedCRC << std::endl;
+        std::cerr << __FILE__ << ":" << __LINE__ << ":CRC mismatch! Read in: 0x" << std::hex << crc << ", but generated: 0x" << generatedCRC << std::endl;
         return PNGChunk(); // Return an empty chunk on CRC mismatch
     }
 
