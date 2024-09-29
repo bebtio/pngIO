@@ -42,6 +42,13 @@ when changes to the tests have been made without changes being made to the libra
 - Add chunk ordering code to PNGFile following order rules here: [libpngchunks](http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html)
   - This is meant to order the chunk vector.  
   
+  
+## [0.8.0] - 2024-09-29
+
+### Added
+
+- PNGPixel class that defines the possible type of pixels.
+
 ## [0.7.0] - 2024-09-08
 
 ### Added
