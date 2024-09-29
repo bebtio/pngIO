@@ -15,8 +15,8 @@ void pngIO::IHDRChunk::clear()
     _length            = 0;
     _width             = 0;
     _height            = 0;
-    _bitDepth          = 0;
-    _colorType         = 0;
+    _bitDepth          = BitDepth::INVALID;
+    _colorType         = ColorType::INVALID;
     _compressionMethod = 0;
     _filterMethod      = 0;
     _interlaceMethod   = 0;
@@ -43,8 +43,8 @@ pngIO::IHDRChunk::readFromRawPNGChunk( const PNGChunk &chunk )
         _width             = ntohl(_width);
         _height            = ntohl(_height);
 
-        _bitDepth          = *reinterpret_cast<uint8_t*>(data.data() + offset ); offset += 1;
-        _colorType         = *reinterpret_cast<uint8_t*>(data.data() + offset ); offset += 1;
+        _bitDepth          = static_cast<BitDepth>(*reinterpret_cast<uint8_t*>(data.data() + offset ));  offset += 1;
+        _colorType         = static_cast<ColorType>(*reinterpret_cast<uint8_t*>(data.data() + offset )); offset += 1;
         _compressionMethod = *reinterpret_cast<uint8_t*>(data.data() + offset ); offset += 1;
         _filterMethod      = *reinterpret_cast<uint8_t*>(data.data() + offset ); offset += 1;
         _interlaceMethod   = *reinterpret_cast<uint8_t*>(data.data() + offset ); offset += 1;

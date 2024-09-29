@@ -18,6 +18,7 @@ struct RGBAPixel16       { uint16_t r, g, b, a; };
 
 // Define vector variant type
 using PixelVector = std::variant<
+    std::monostate,
     std::vector<GrayscalePixel8>,
     std::vector<GrayscalePixel16>,
     std::vector<GrayscalePixelA8>,

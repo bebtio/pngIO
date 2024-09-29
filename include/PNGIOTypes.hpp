@@ -35,6 +35,25 @@ namespace pngIO
         INVALID = 0x0
     };
 
+    enum class ColorType: uint8_t
+    {
+        grayScale  = 0,
+        rgb        = 2,
+        pallete    = 3,
+        grayScaleA = 4,
+        rgba       = 6,
+        INVALID    = 255
+    };
+
+    enum class BitDepth: uint8_t
+    {
+        one     = 1,
+        two     = 2,
+        four    = 4,
+        eight   = 8,
+        sixteen = 16,
+        INVALID = 0
+    };
 
     class PNGChunkInterface
     {
@@ -69,8 +88,8 @@ namespace pngIO
         // Getters
         uint32_t getWidth()             const                { return _width;             }
         uint32_t getHeight()            const                { return _height;            }
-        uint8_t  getBitDepth()          const                { return _bitDepth;          }
-        uint8_t  getColorType()         const                { return _colorType;         }
+        BitDepth  getBitDepth()          const                { return _bitDepth;          }
+        ColorType  getColorType()         const                { return _colorType;         }
         uint8_t  getCompressionMethod() const                { return _compressionMethod; }
         uint8_t  getFilterMethod()      const                { return _filterMethod;      }
         uint8_t  getInterlaceMethod()   const                { return _interlaceMethod;   }
@@ -78,8 +97,8 @@ namespace pngIO
         // Setters
         void setWidth(uint32_t width)                        { _width             = width;             }
         void setHeight(uint32_t height)                      { _height            = height;            }
-        void setBitDepth(uint8_t bitDepth)                   { _bitDepth          = bitDepth;          }
-        void setColorType(uint8_t colorType)                 { _colorType         = colorType;         }
+        void setBitDepth(BitDepth bitDepth)                   { _bitDepth          = bitDepth;          }
+        void setColorType(ColorType colorType)                 { _colorType         = colorType;         }
         void setCompressionMethod(uint8_t compressionMethod) { _compressionMethod = compressionMethod; }
         void setFilterMethod(uint8_t filterMethod)           { _filterMethod      = filterMethod;      }
         void setInterlaceMethod(uint8_t interlaceMethod)     { _interlaceMethod   = interlaceMethod;   }
@@ -87,8 +106,8 @@ namespace pngIO
     private:
         uint32_t _width;
         uint32_t _height;
-        uint8_t  _bitDepth;
-        uint8_t  _colorType;
+        BitDepth  _bitDepth;
+        ColorType _colorType;
         uint8_t  _compressionMethod;
         uint8_t  _filterMethod;
         uint8_t  _interlaceMethod;

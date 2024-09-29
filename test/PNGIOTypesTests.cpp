@@ -23,8 +23,8 @@ TEST_F( PNGIOTypesTests, IHDRChunkReadTest )
     ASSERT_EQ( ihdrChunk.getLength(),            13                     );
     ASSERT_EQ( ihdrChunk.getWidth(),             10                     );
     ASSERT_EQ( ihdrChunk.getHeight(),            10                     );
-    ASSERT_EQ( ihdrChunk.getBitDepth(),          8                      );
-    ASSERT_EQ( ihdrChunk.getColorType(),         2                      );
+    ASSERT_EQ( ihdrChunk.getBitDepth(),          pngIO::BitDepth::eight );
+    ASSERT_EQ( ihdrChunk.getColorType(),         pngIO::ColorType::rgb  );
     ASSERT_EQ( ihdrChunk.getCompressionMethod(), 0                      );
     ASSERT_EQ( ihdrChunk.getFilterMethod(),      0                      );
     ASSERT_EQ( ihdrChunk.getInterlaceMethod(),   0                      );
@@ -57,8 +57,8 @@ TEST_F( PNGIOTypesTests, IHDRChunkWriteTest )
     originalIHDRChunk.setLength( 13 );
     originalIHDRChunk.setWidth( 100 );
     originalIHDRChunk.setWidth( 150 );
-    originalIHDRChunk.setBitDepth( 8 );
-    originalIHDRChunk.setColorType( 2 );
+    originalIHDRChunk.setBitDepth( pngIO::BitDepth::one );
+    originalIHDRChunk.setColorType( pngIO::ColorType::grayScale );
     originalIHDRChunk.setCompressionMethod( 0 );
     originalIHDRChunk.setFilterMethod( 0 );
     originalIHDRChunk.setInterlaceMethod( 0 );
