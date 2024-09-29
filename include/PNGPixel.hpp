@@ -1,4 +1,5 @@
 #include <variant>
+#include <vector>
 #include <cstdint>
 
 namespace pngIO
@@ -15,16 +16,16 @@ struct RGBPixel16        { uint16_t r, g, b;    };
 struct RGBAPixel8        { uint8_t  r, g, b, a; };
 struct RGBAPixel16       { uint16_t r, g, b, a; };
 
-// Define variant type
-using Pixel = std::variant<
-    GrayscalePixel8,
-    GrayscalePixel16,
-    GrayscalePixelA8,
-    GrayscalePixelA16,
-    RGBPixel8,
-    RGBPixel16,
-    RGBAPixel8,
-    RGBAPixel16
+// Define vector variant type
+using PixelVector = std::variant<
+    std::vector<GrayscalePixel8>,
+    std::vector<GrayscalePixel16>,
+    std::vector<GrayscalePixelA8>,
+    std::vector<GrayscalePixelA16>,
+    std::vector<RGBPixel8>,
+    std::vector<RGBPixel16>,
+    std::vector<RGBAPixel8>,
+    std::vector<RGBAPixel16>
 >;
 
 }
