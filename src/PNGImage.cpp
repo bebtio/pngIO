@@ -126,68 +126,66 @@ pngImageUtil::createPixelVectorFromChunks( std::vector<PNGChunk> chunks )
     }
 }
 
+std::vector<pngIO::GrayscalePixel8>
+pngImageUtil::createGrayscalePixel8Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::GrayscalePixel8> image;
 
+    return(image);
+}
 
-    std::vector<pngIO::GrayscalePixel8>
-    pngImageUtil::createGrayscalePixel8Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::GrayscalePixel8> image;
+std::vector<pngIO::GrayscalePixel16>
+pngImageUtil::createGrayscalePixel16Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::GrayscalePixel16> image;
 
-        return(image);
-    }
+    return(image);
+}
 
-    std::vector<pngIO::GrayscalePixel16>
-    pngImageUtil::createGrayscalePixel16Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::GrayscalePixel16> image;
+std::vector<pngIO::GrayscalePixelA8>
+pngImageUtil::createGrayscalePixelA8Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::GrayscalePixelA8> image;
 
-        return(image);
-    }
+    return(image);
+}
 
-    std::vector<pngIO::GrayscalePixelA8>
-    pngImageUtil::createGrayscalePixelA8Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::GrayscalePixelA8> image;
+std::vector<pngIO::GrayscalePixelA16>
+pngImageUtil::createGrayscalePixelA16Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::GrayscalePixelA16> image;
 
-        return(image);
-    }
-
-    std::vector<pngIO::GrayscalePixelA16>
-    pngImageUtil::createGrayscalePixelA16Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::GrayscalePixelA16> image;
-
-        return(image);
-    }
+    return(image);
+}
     
-    std::vector<pngIO::RGBPixel8>
-    pngImageUtil::createRGBPixel8Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::RGBPixel8> image;
+std::vector<pngIO::RGBPixel8>
+pngImageUtil::createRGBPixel8Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::RGBPixel8> image;
 
-        return(image);
-    }
+    return(image);
+}
 
-    std::vector<pngIO::RGBPixel16>
-    pngImageUtil::createRGBPixel16Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::RGBPixel16> image;
+std::vector<pngIO::RGBPixel16>
+pngImageUtil::createRGBPixel16Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::RGBPixel16> image;
 
-        return(image);
-    }
+    return(image);
+}
 
-    std::vector<pngIO::RGBAPixel8>
-    pngImageUtil::createRGBAPixel8Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::RGBAPixel8> image;
+std::vector<pngIO::RGBAPixel8>
+pngImageUtil::createRGBAPixel8Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::RGBAPixel8> image;
 
-        return(image);
-    }
+    return(image);
+}
 
-    std::vector<pngIO::RGBAPixel16>
-    pngImageUtil::createRGBAPixel16Vector( const PNGChunk& chunk )
-    {
-        std::vector<pngIO::RGBAPixel16> image;
+std::vector<pngIO::RGBAPixel16>
+pngImageUtil::createRGBAPixel16Vector( const PNGChunk& chunk )
+{
+    std::vector<pngIO::RGBAPixel16> image;
 
-        return(image);
-    }
+    return(image);
+}

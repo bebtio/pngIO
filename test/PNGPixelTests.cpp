@@ -2,6 +2,8 @@
 
 #include "PNGPixel.hpp"
 
+// I want this test to test the pngImageUtil::createPixelVectorFromChunks
+// Function to be tested here.
 TEST_F( PNGPixelTests, DummyTest )
 {
     pngIO::PixelVector pixels;
