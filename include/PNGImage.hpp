@@ -21,12 +21,11 @@ private:
 
 namespace pngImageUtil 
 {
-pngIO::PixelVector 
-createPixelVectorFromChunks( std::vector<PNGChunk> chunks );
-
+    pngIO::PixelVector 
+    createPixelVectorFromChunks( std::vector<PNGChunk> chunks );
 
     std::vector<pngIO::GrayscalePixel8>
-    createGrayScalPixel8Vector( const PNGChunk& chunk );
+    createGrayscalePixel8Vector( const PNGChunk& chunk );
 
     std::vector<pngIO::GrayscalePixel16>
     createGrayscalePixel16Vector( const PNGChunk& chunk );
